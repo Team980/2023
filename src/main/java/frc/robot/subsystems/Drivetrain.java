@@ -144,4 +144,14 @@ public class Drivetrain extends SubsystemBase {
   public void resetYaw(double value){
     imu.setYaw(value);
   }
+
+  public void enableManualOverride() {
+    leftDrive.setManualOverride(true);
+    rightDrive.setManualOverride(true);
+  }
+
+  public void disableManualOverride() {
+    leftDrive.setManualOverride(false);
+    rightDrive.setManualOverride(false);
+  }
 }

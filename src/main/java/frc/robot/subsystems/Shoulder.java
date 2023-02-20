@@ -15,10 +15,6 @@ import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 public class Shoulder extends PIDSubsystem {
   /** Creates a new Shoulder. */
 
-  private double KP = 12.0 / 90;  // 12V / 90 degrees 
-  private double KI = 0;
-  private double KD = 0;
-
   private ArmFeedforward shoFF;  // keeps arm from falling 
 
   private WPI_TalonSRX shoulder;
@@ -52,5 +48,11 @@ public class Shoulder extends PIDSubsystem {
     SmartDashboard.putNumber("shoPos", encVal);  // see what all positions are :D
 
     return encVal;
+  }
+
+  public void kindaManual(double move) {
+    if(Math.abs(move) > 0.2) {
+      setSetpoint(move + getMeasurement());
+    }
   }
 }

@@ -10,7 +10,9 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shifter;
+import frc.robot.subsystems.Shoulder;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,6 +28,7 @@ public class RobotContainer {
   
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shifter shifter  = new Shifter (drivetrain);
+  private final Shoulder shoulder = new Shoulder();
 
   private final CommandXboxController xbox = new CommandXboxController(2);
 
@@ -45,12 +48,16 @@ public class RobotContainer {
   public RobotContainer() {
 
     drivetrain.setDefaultCommand(new RunCommand(
-      () -> drivetrain.driveRobot(throttle.getY(), wheel.getX()), 
+      () -> drivetrain.driveRobot(xbox.getLeftY(), xbox.getRightX()), 
       drivetrain
       ));
     shifter.setDefaultCommand(new RunCommand(shifter::setLowGear, shifter) );
 
-
+    shoulder.setDefaultCommand(new RunCommand(
+      () -> shoulder.kindaManual(xbox.getLeftTriggerAxis()),
+      shoulder
+       ));
+       
     // Configure the trigger bindings
     configureBindings();
   }
@@ -65,12 +72,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    throttle.button(4).onTrue(new RunCommand(shifter::setHighGear, shifter) );
-    throttle.button(3).onTrue(new RunCommand(shifter::setLowGear, shifter) );
-    throttle.button(5).onTrue(new RunCommand(
+    xbox.rightStick().onTrue(new RunCommand(shifter::setHighGear, shifter) );
+    xbox.leftStick().onTrue(new RunCommand(shifter::setLowGear, shifter) );
+    /*throttle.button(5).onTrue(new RunCommand(
       () -> shifter.autoShift(),
       shifter
-      ));
+      ));*/
+
+    xbox.start().onTrue(new InstantCommand(drivetrain::enableManualOverride, drivetrain));
+    xbox.back().onTrue(new InstantCommand(drivetrain::disableManualOverride, drivetrain));
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
