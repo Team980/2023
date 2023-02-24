@@ -31,16 +31,16 @@ public class Drivetrain extends SubsystemBase {
   private Encoder leftEncoder;
   private Encoder rightEncoder;
 
-  private PigeonIMU imu;
-  private PigeonIMU.GeneralStatus generalStatus;
-  private int imuErrorCode;
-  private double [] ypr;
+  //private PigeonIMU imu;
+  //private PigeonIMU.GeneralStatus generalStatus;
+  //private int imuErrorCode;
+  //private double [] ypr;
 
   public Drivetrain() {
     var collectorTalon = new WPI_TalonSRX(7); // TODO may not need
-    imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
-    generalStatus = new PigeonIMU.GeneralStatus();
-    ypr = new double [3];
+    //imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
+    //generalStatus = new PigeonIMU.GeneralStatus();
+    //ypr = new double [3];
 
     var leftTop = new WPI_TalonSRX(7);
     var leftBack = new WPI_TalonSRX(3);
@@ -51,7 +51,6 @@ public class Drivetrain extends SubsystemBase {
     leftBack.setNeutralMode(NeutralMode.Coast);
     leftFront.setNeutralMode(NeutralMode.Coast);
     
-    // TODO correct channel
     leftEncoder = new Encoder(0, 1, false, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
     leftEncoder.setDistancePerPulse( (Math.PI / 3.0) / 2048.0 );
     leftDrive = new PIDMotorGroup(new MotorControllerGroup(leftTop, leftBack, leftFront), MAX_VELOCITY_LOW, KS_LOW, leftEncoder, KP_LOW, MAX_VELOCITY_HIGH, KS_HIGH, KP_HIGH);
@@ -64,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
     rightTop.setNeutralMode(NeutralMode.Coast); // TODO decide on brake or coast :P
     rightBack.setNeutralMode(NeutralMode.Coast);
     rightFront.setNeutralMode(NeutralMode.Coast);
-    // TODO correct channel :O
+
     rightEncoder = new Encoder(2, 3, true, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
     rightEncoder.setDistancePerPulse( (Math.PI / 3.0) / 2048.0 );
     rightDrive = new PIDMotorGroup(new MotorControllerGroup(rightTop, rightBack, rightFront), MAX_VELOCITY_LOW, KS_LOW, rightEncoder, KP_LOW, MAX_VELOCITY_HIGH, KS_HIGH, KP_HIGH);
@@ -96,15 +95,22 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    imuErrorCode = imu.getGeneralStatus(generalStatus).value;
-    imu.getYawPitchRoll(ypr);
-    SmartDashboard.putNumber("IMU Health", imuErrorCode);
-    SmartDashboard.putNumber("IMU Yaw", ypr[0]);
+    //imuErrorCode = imu.getGeneralStatus(generalStatus).value;
+    //imu.getYawPitchRoll(ypr);
+    //SmartDashboard.putNumber("IMU Health", imuErrorCode);
+    //SmartDashboard.putNumber("IMU Yaw", ypr[0]);
     SmartDashboard.putNumber("Left Speed", leftEncoder.getRate() );
     SmartDashboard.putNumber("Right Speed", rightEncoder.getRate() );
 
     SmartDashboard.putNumber("Left Distance", leftEncoder.getDistance() );
     SmartDashboard.putNumber("Right Distance", rightEncoder.getDistance() );
+
+    //debugging prints
+    SmartDashboard.putNumber("leftPIDout", leftDrive.getPIDOutput());
+    SmartDashboard.putNumber("leftSetPoint", leftDrive.getSetpoint());
+    SmartDashboard.putNumber("rightPIDout", rightDrive.getPIDOutput());
+    SmartDashboard.putNumber("rightSetPoint", rightDrive.getSetpoint());
+
   }
 
   public void stop(){
@@ -133,17 +139,17 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder.reset();
   }
 
-  public int getIMUHealth(){
+  /*public int getIMUHealth(){
     return imuErrorCode;
-  }
+  }*/
 
-  public double [] getYPR() {
+  /*public double [] getYPR() {
     return ypr;
-  }
+  }*/
 
-  public void resetYaw(double value){
+  /*public void resetYaw(double value){
     imu.setYaw(value);
-  }
+  }*/
 
   public void enableManualOverride() {
     leftDrive.setManualOverride(true);

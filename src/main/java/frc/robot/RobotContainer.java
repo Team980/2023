@@ -10,7 +10,6 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shifter;
-import frc.robot.subsystems.Shoulder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -26,23 +25,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   
+  // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shifter shifter  = new Shifter (drivetrain);
-  //private final Shoulder shoulder = new Shoulder();
 
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox = new CommandXboxController(2);
 
   private final CommandJoystick wheel = new CommandJoystick(0);
   private final CommandJoystick throttle = new CommandJoystick(1);
   private final CommandJoystick prajBox = new CommandJoystick(4);
-
-
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,11 +46,7 @@ public class RobotContainer {
       ));
     shifter.setDefaultCommand(new RunCommand(shifter::setLowGear, shifter) );
 
-    /*shoulder.setDefaultCommand(new RunCommand(
-      () -> shoulder.kindaManual(xbox.getLeftTriggerAxis()),
-      shoulder
-       ));*/
-       
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -82,13 +71,13 @@ public class RobotContainer {
     xbox.start().onTrue(new InstantCommand(drivetrain::enableManualOverride, drivetrain));
     xbox.back().onTrue(new InstantCommand(drivetrain::disableManualOverride, drivetrain));
 
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    /* Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+        .onTrue(new ExampleCommand(m_exampleSubsystem));*/
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -98,6 +87,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    //return Autos.exampleAuto(m_exampleSubsystem);
+    return null;
   }
 }

@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
 public class PIDMotorGroup extends PIDSubsystem implements MotorController{
@@ -30,6 +31,10 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
 
   private double outputVoltage;
 
+  //debugging variables
+  private double PIDOutput = 0;
+  
+
   /** Creates a new PIDMotorGroup. */
   public PIDMotorGroup(MotorControllerGroup motors, double maxVelocityLow, double ksLow, Encoder encoder, double kpLow, double maxVelocityHigh, double ksHigh, double kpHigh) {
     super(
@@ -49,11 +54,15 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
           ffHigh = new SimpleMotorFeedforward(ksHigh, 12.0/maxVelocityHigh);
           
   }
+  public double getPIDOutput(){//debugging method
+    return PIDOutput;
+  }
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    
+    PIDOutput = output;
+
     if(inLowGear) {
       outputVoltage = output + ffLow.calculate(setpoint);
       motors.setVoltage(outputVoltage);
