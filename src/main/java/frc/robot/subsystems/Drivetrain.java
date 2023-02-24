@@ -42,9 +42,9 @@ public class Drivetrain extends SubsystemBase {
     generalStatus = new PigeonIMU.GeneralStatus();
     ypr = new double [3];
 
-    var leftTop = new WPI_TalonSRX(3);
-    var leftBack = new WPI_TalonSRX(1);
-    var leftFront = new WPI_TalonSRX(5);
+    var leftTop = new WPI_TalonSRX(1);
+    var leftBack = new WPI_TalonSRX(3);
+    var leftFront = new WPI_TalonSRX(2);
     leftTop.setInverted(true);
     
     leftTop.setNeutralMode(NeutralMode.Coast); // TODO decide on brake or coast 
@@ -52,20 +52,20 @@ public class Drivetrain extends SubsystemBase {
     leftFront.setNeutralMode(NeutralMode.Coast);
     
     // TODO correct channel
-    leftEncoder = new Encoder(4, 5, false, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
+    leftEncoder = new Encoder(0, 1, false, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
     leftEncoder.setDistancePerPulse( (Math.PI / 3.0) / 2048.0 );
     leftDrive = new PIDMotorGroup(new MotorControllerGroup(leftTop, leftBack, leftFront), MAX_VELOCITY_LOW, KS_LOW, leftEncoder, KP_LOW, MAX_VELOCITY_HIGH, KS_HIGH, KP_HIGH);
 
     var rightTop = new WPI_TalonSRX(4);
-    var rightBack = new WPI_TalonSRX(2);
-    var rightFront = new WPI_TalonSRX(6);
+    var rightBack = new WPI_TalonSRX(6);
+    var rightFront = new WPI_TalonSRX(5);
     rightTop.setInverted(true);
 
     rightTop.setNeutralMode(NeutralMode.Coast); // TODO decide on brake or coast :P
     rightBack.setNeutralMode(NeutralMode.Coast);
     rightFront.setNeutralMode(NeutralMode.Coast);
     // TODO correct channel :O
-    rightEncoder = new Encoder(6, 7, true, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
+    rightEncoder = new Encoder(2, 3, true, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
     rightEncoder.setDistancePerPulse( (Math.PI / 3.0) / 2048.0 );
     rightDrive = new PIDMotorGroup(new MotorControllerGroup(rightTop, rightBack, rightFront), MAX_VELOCITY_LOW, KS_LOW, rightEncoder, KP_LOW, MAX_VELOCITY_HIGH, KS_HIGH, KP_HIGH);
     rightDrive.setInverted(true);
