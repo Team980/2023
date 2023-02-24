@@ -28,7 +28,7 @@ public class RobotContainer {
   
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shifter shifter  = new Shifter (drivetrain);
-  private final Shoulder shoulder = new Shoulder();
+  //private final Shoulder shoulder = new Shoulder();
 
   private final CommandXboxController xbox = new CommandXboxController(2);
 
@@ -53,10 +53,10 @@ public class RobotContainer {
       ));
     shifter.setDefaultCommand(new RunCommand(shifter::setLowGear, shifter) );
 
-    shoulder.setDefaultCommand(new RunCommand(
+    /*shoulder.setDefaultCommand(new RunCommand(
       () -> shoulder.kindaManual(xbox.getLeftTriggerAxis()),
       shoulder
-       ));
+       ));*/
        
     // Configure the trigger bindings
     configureBindings();

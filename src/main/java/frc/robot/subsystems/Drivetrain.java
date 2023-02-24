@@ -20,9 +20,9 @@ public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
   private double MAX_VELOCITY_LOW = 5.0; // TODO 
   private double MAX_VELOCITY_HIGH = 17.5; // TODO
-  private double KS_LOW = 1.0; //3.25  TODO
+  private double KS_LOW = 0.05; //3.25  TODO
   private double KS_HIGH = 1.0; //3.5  TODO
-  private double KP_LOW = 2.0; // TODO
+  private double KP_LOW = 3.0; // TODO
   private double KP_HIGH = 0.5; // TODO
 
   private PIDMotorGroup leftDrive;
@@ -42,7 +42,7 @@ public class Drivetrain extends SubsystemBase {
     generalStatus = new PigeonIMU.GeneralStatus();
     ypr = new double [3];
 
-    var leftTop = new WPI_TalonSRX(1);
+    var leftTop = new WPI_TalonSRX(7);
     var leftBack = new WPI_TalonSRX(3);
     var leftFront = new WPI_TalonSRX(2);
     leftTop.setInverted(true);
