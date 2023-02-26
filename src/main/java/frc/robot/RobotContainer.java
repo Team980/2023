@@ -10,7 +10,9 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shifter;
+import frc.robot.subsystems.Shoulder;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -28,9 +30,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shifter shifter  = new Shifter (drivetrain);
+  //private final Shoulder shoulder = new Shoulder();
 
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox = new CommandXboxController(2);
 
   private final CommandJoystick wheel = new CommandJoystick(0);
@@ -40,13 +41,17 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    drivetrain.setDefaultCommand(new RunCommand(
-      () -> drivetrain.driveRobot(xbox.getLeftY(), xbox.getRightX()), 
+    drivetrain.setDefaultCommand(Commands.run(
+      () -> drivetrain.driveRobot(-xbox.getLeftY(), -xbox.getRightX()), 
       drivetrain
       ));
-    shifter.setDefaultCommand(new RunCommand(shifter::setLowGear, shifter) );
+    shifter.setDefaultCommand(shifter.setGear(true));
 
-
+    /*shoulder.setDefaultCommand(new RunCommand(
+      () -> shoulder.kindaManual(xbox.getLeftTriggerAxis()),
+      shoulder
+       ));*/
+       
     // Configure the trigger bindings
     configureBindings();
   }
@@ -61,8 +66,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.rightStick().onTrue(new RunCommand(shifter::setHighGear, shifter) );
-    xbox.leftStick().onTrue(new RunCommand(shifter::setLowGear, shifter) );
+    xbox.rightStick().onTrue(shifter.setGear(false));
+    xbox.leftStick().onTrue(shifter.setGear(true));
     /*throttle.button(5).onTrue(new RunCommand(
       () -> shifter.autoShift(),
       shifter

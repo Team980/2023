@@ -21,6 +21,9 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
   private double maxVelocityLow;
   private double maxVelocityHigh;
 
+  private double SPEED_LIMIT_HIGH; 
+  private double SPEED_LIMIT_LOW;
+
   private Encoder encoder;
 
   private SimpleMotorFeedforward ffLow;
@@ -36,7 +39,7 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
   
 
   /** Creates a new PIDMotorGroup. */
-  public PIDMotorGroup(MotorControllerGroup motors, double maxVelocityLow, double ksLow, Encoder encoder, double kpLow, double maxVelocityHigh, double ksHigh, double kpHigh) {
+  public PIDMotorGroup(MotorControllerGroup motors, double maxVelocityLow, double ksLow, Encoder encoder, double kpLow, double maxVelocityHigh, double ksHigh, double kpHigh, double SPEED_LIMIT_LOW, double SPEED_LIMIT_HIGH) {
     super(
         // The PIDController used by the subsystem
         new PIDController(kpLow, 0, 0));
@@ -48,6 +51,8 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
           this.kpHigh = kpHigh;
           this.inLowGear = true;
           this.manualOverride = false;
+          this.SPEED_LIMIT_LOW = SPEED_LIMIT_LOW;
+          this.SPEED_LIMIT_HIGH = SPEED_LIMIT_HIGH;
           enable();
 
           ffLow = new SimpleMotorFeedforward(ksLow, 12.0/maxVelocityLow);
@@ -85,10 +90,10 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
       motors.setVoltage(speed * 12);
     } 
     else if(inLowGear) {
-      setSetpoint(speed * maxVelocityLow);
+      setSetpoint(speed * SPEED_LIMIT_LOW);
     }
     else {
-      setSetpoint(speed * maxVelocityHigh);
+      setSetpoint(speed * SPEED_LIMIT_HIGH);
     }
   }
 

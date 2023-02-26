@@ -18,11 +18,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
-  private double MAX_VELOCITY_LOW = 5.0; // TODO 
-  private double MAX_VELOCITY_HIGH = 17.5; // TODO
-  private double KS_LOW = 0.05; //3.25  TODO
-  private double KS_HIGH = 1.0; //3.5  TODO
-  private double KP_LOW = 3.0; // TODO
+  private double MAX_VELOCITY_LOW_RIGHT = 4.5;
+  private double MAX_VELOCITY_LOW_LEFT = 4.75; 
+  private double MAX_VELOCITY_HIGH_RIGHT = 17.5; // TODO
+  private double MAX_VELOCITY_HIGH_LEFT = 17.5; // TODO
+
+  private double SPEED_LIMIT_LOW = 4.25; 
+  private double SPEED_LIMIT_HIGH = 17.5; // TODO
+
+  private double KS_LOW_RIGHT = 0.05; //3.25  TODO
+  private double KS_HIGH_RIGHT = 1.0; //3.5  TODO
+  private double KS_LOW_LEFT = 0.05; //3.25  TODO
+  private double KS_HIGH_LEFT = 1.0; //3.5  TODO
+
+  private double KP_LOW = 2.1; // TODO
   private double KP_HIGH = 0.5; // TODO
 
   private PIDMotorGroup leftDrive;
@@ -37,7 +46,7 @@ public class Drivetrain extends SubsystemBase {
   //private double [] ypr;
 
   public Drivetrain() {
-    var collectorTalon = new WPI_TalonSRX(7); // TODO may not need
+    //var collectorTalon = new WPI_TalonSRX(7); // TODO may not need
     //imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
     //generalStatus = new PigeonIMU.GeneralStatus();
     //ypr = new double [3];
@@ -53,8 +62,8 @@ public class Drivetrain extends SubsystemBase {
     
     leftEncoder = new Encoder(0, 1, false, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
     leftEncoder.setDistancePerPulse( (Math.PI / 3.0) / 2048.0 );
-    leftDrive = new PIDMotorGroup(new MotorControllerGroup(leftTop, leftBack, leftFront), MAX_VELOCITY_LOW, KS_LOW, leftEncoder, KP_LOW, MAX_VELOCITY_HIGH, KS_HIGH, KP_HIGH);
-
+    leftDrive = new PIDMotorGroup(new MotorControllerGroup(leftTop, leftBack, leftFront), MAX_VELOCITY_LOW_LEFT, KS_LOW_LEFT, leftEncoder, KP_LOW, MAX_VELOCITY_HIGH_LEFT, KS_HIGH_LEFT, KP_HIGH, SPEED_LIMIT_LOW, SPEED_LIMIT_HIGH);
+    
     var rightTop = new WPI_TalonSRX(4);
     var rightBack = new WPI_TalonSRX(6);
     var rightFront = new WPI_TalonSRX(5);
@@ -66,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
 
     rightEncoder = new Encoder(2, 3, true, EncodingType.k4X); //come back to false bit, switch if forward is negative and vise versa
     rightEncoder.setDistancePerPulse( (Math.PI / 3.0) / 2048.0 );
-    rightDrive = new PIDMotorGroup(new MotorControllerGroup(rightTop, rightBack, rightFront), MAX_VELOCITY_LOW, KS_LOW, rightEncoder, KP_LOW, MAX_VELOCITY_HIGH, KS_HIGH, KP_HIGH);
+    rightDrive = new PIDMotorGroup(new MotorControllerGroup(rightTop, rightBack, rightFront), MAX_VELOCITY_LOW_RIGHT, KS_LOW_RIGHT, rightEncoder, KP_LOW, MAX_VELOCITY_HIGH_RIGHT, KS_HIGH_RIGHT, KP_HIGH, SPEED_LIMIT_LOW, SPEED_LIMIT_HIGH);
     rightDrive.setInverted(true);
 
     robotDrive = new DifferentialDrive(leftDrive, rightDrive);
@@ -88,7 +97,7 @@ public class Drivetrain extends SubsystemBase {
       turn = 0;
     }
     
-      robotDrive.arcadeDrive(-move, -turn);
+      robotDrive.arcadeDrive(move, turn);
 
   }
 
