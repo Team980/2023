@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -39,6 +40,9 @@ public class Drivetrain extends SubsystemBase {
   private DifferentialDrive robotDrive;
   private Encoder leftEncoder;
   private Encoder rightEncoder;
+
+  private PowerDistribution pdh;
+
 
   //private PigeonIMU imu;
   //private PigeonIMU.GeneralStatus generalStatus;
@@ -79,6 +83,9 @@ public class Drivetrain extends SubsystemBase {
     rightDrive.setInverted(true);
 
     robotDrive = new DifferentialDrive(leftDrive, rightDrive);
+
+    pdh = new PowerDistribution();//This needs to be CAN ID 1
+
   }
 
   public void shiftGear(boolean inLowGear) {
@@ -119,6 +126,14 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("leftSetPoint", leftDrive.getSetpoint());
     SmartDashboard.putNumber("rightPIDout", rightDrive.getPIDOutput());
     SmartDashboard.putNumber("rightSetPoint", rightDrive.getSetpoint());
+
+    SmartDashboard.putNumber("Right Front Amps", pdh.getCurrent(5));
+    SmartDashboard.putNumber("Right Back Amps", pdh.getCurrent(6));
+    SmartDashboard.putNumber("Right Top Amps", pdh.getCurrent(4));
+    SmartDashboard.putNumber("Left Front Amps", pdh.getCurrent(2));
+    SmartDashboard.putNumber("Left Back Amps", pdh.getCurrent(3));
+    SmartDashboard.putNumber("Left Top Amps", pdh.getCurrent(7));
+
 
   }
 

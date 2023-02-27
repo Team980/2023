@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
 public class PIDMotorGroup extends PIDSubsystem implements MotorController{
@@ -17,9 +16,6 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
 
   private double kpLow; // proportional part of PID loop
   private double kpHigh;
-
-  private double maxVelocityLow;
-  private double maxVelocityHigh;
 
   private double SPEED_LIMIT_HIGH; 
   private double SPEED_LIMIT_LOW;
@@ -39,13 +35,14 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
   
 
   /** Creates a new PIDMotorGroup. */
-  public PIDMotorGroup(MotorControllerGroup motors, double maxVelocityLow, double ksLow, Encoder encoder, double kpLow, double maxVelocityHigh, double ksHigh, double kpHigh, double SPEED_LIMIT_LOW, double SPEED_LIMIT_HIGH) {
+  public PIDMotorGroup(MotorControllerGroup motors, double maxVelocityLow, double ksLow, Encoder encoder, double kpLow, 
+      double maxVelocityHigh, double ksHigh, double kpHigh, 
+      double SPEED_LIMIT_LOW, double SPEED_LIMIT_HIGH) {
+
     super(
         // The PIDController used by the subsystem
         new PIDController(kpLow, 0, 0));
           this.motors = motors;
-          this.maxVelocityLow = maxVelocityLow;
-          this.maxVelocityHigh = maxVelocityHigh;
           this.encoder = encoder;
           this.kpLow = kpLow;
           this.kpHigh = kpHigh;
