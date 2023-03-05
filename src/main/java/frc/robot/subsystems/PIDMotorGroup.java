@@ -41,12 +41,12 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
 
     super(
         // The PIDController used by the subsystem
-        new PIDController(kpLow, 0, 0));
+        new PIDController(kpHigh, 0, 0));
           this.motors = motors;
           this.encoder = encoder;
           this.kpLow = kpLow;
           this.kpHigh = kpHigh;
-          this.inLowGear = true;
+          this.inLowGear = false;
           this.manualOverride = false;
           this.SPEED_LIMIT_LOW = SPEED_LIMIT_LOW;
           this.SPEED_LIMIT_HIGH = SPEED_LIMIT_HIGH;

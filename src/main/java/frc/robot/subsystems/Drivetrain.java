@@ -21,11 +21,11 @@ public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
   private double MAX_VELOCITY_LOW_RIGHT = 4.5;
   private double MAX_VELOCITY_LOW_LEFT = 4.75; 
-  private double MAX_VELOCITY_HIGH_RIGHT = 17.5; // TODO
-  private double MAX_VELOCITY_HIGH_LEFT = 17.5; // TODO
+  private double MAX_VELOCITY_HIGH_RIGHT = 17.0; // TODO
+  private double MAX_VELOCITY_HIGH_LEFT = 18.0; // TODO
 
   private double SPEED_LIMIT_LOW = 4.25; 
-  private double SPEED_LIMIT_HIGH = 17.5; // TODO
+  private double SPEED_LIMIT_HIGH = 16.0; // TODO
 
   private double KS_LOW_RIGHT = 0.05; //3.25  TODO
   private double KS_HIGH_RIGHT = 1.0; //3.5  TODO
@@ -134,7 +134,8 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Back Amps", pdh.getCurrent(3));
     SmartDashboard.putNumber("Left Top Amps", pdh.getCurrent(7));
 
-
+    SmartDashboard.putNumber("KP Right", rightDrive.getController().getP());
+    SmartDashboard.putNumber("KP Left", leftDrive.getController().getP());
   }
 
   public void stop(){
