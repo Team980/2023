@@ -13,6 +13,22 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final double BAG_MOTOR_STALL_TORQUE = 3.5/ 12.0; //ft-lbs
+
+  public static final double SHO_SEGMENT_MASS = 5.4; //lbs
+  public static final double SHO_SEGMENT_LENGTH = 32 / 12.0; //ft
+  public static final double SHO_CG_FROM_JOINT = 9 / 12.0; //ft
+
+  public static final double EL_SEGMENT_MASS = 5.21; //lbs
+  public static final double EL_SEGMENT_LENGTH = 22 / 12.0; //ft
+  public static final double EL_CG_FROM_JOINT = 17 / 12.0; //ft
+
+  public static final double W_SEGMENT_MASS = 3.89; //lbs
+  public static final double W_SEGMENT_LENGTH = 15 / 12.0; //ft
+  public static final double W_CG_FROM_JOINT = 5 / 12.0; //ft
+
+  public static final double ACCEL_G = -32.17; //ft/s2
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }

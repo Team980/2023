@@ -7,10 +7,13 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ArmSensors;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shifter;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,7 +33,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shifter shifter  = new Shifter (drivetrain);
-  //private final Shoulder shoulder = new Shoulder();
+  private final ArmSensors armSensors = new ArmSensors();
+  private final Shoulder shoulder = new Shoulder(armSensors);
+  private final Wrist wrist = new Wrist(armSensors);
+  private final Elbow elbow = new Elbow(armSensors);
 
   private final CommandXboxController xbox = new CommandXboxController(2);
 
@@ -41,11 +47,17 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    drivetrain.setDefaultCommand(Commands.run(
+    /*drivetrain.setDefaultCommand(Commands.run(
       () -> drivetrain.driveRobot(-xbox.getLeftY(), -xbox.getRightX()), 
       drivetrain
-      ));
-    shifter.setDefaultCommand(shifter.setGear(true));
+      )); */
+
+    //shifter.setDefaultCommand(shifter.setGear(true));
+
+    shoulder.setDefaultCommand(Commands.run(
+      () -> shoulder.runShoulder(xbox.getLeftY()),
+      shoulder
+    ));
 
     /*shoulder.setDefaultCommand(new RunCommand(
       () -> shoulder.kindaManual(xbox.getLeftTriggerAxis()),

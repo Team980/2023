@@ -6,45 +6,55 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import static frc.robot.Constants.*;
 
 public class Wrist extends PIDSubsystem {
   /** Creates a new Wrist. */
+  private ArmSensors sensors;
 
-  private ArmFeedforward wrFF; 
+  private final double KS = .05;
+  private final double GEAR_RATIO = 100;
 
   private WPI_TalonSRX wrist; 
-  private DutyCycleEncoder wrEnc; // wrist encoder 
 
-  public Wrist() {
+  public Wrist(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
         new PIDController(12.0 / 90, 0, 0));
 
-        wrFF = new ArmFeedforward(0, 0, 0);
-
-        wrist = new WPI_TalonSRX(9);
-        wrEnc = new DutyCycleEncoder(2);
+        wrist = new WPI_TalonSRX(8);
+        this.sensors = sensors;
+        //enable();
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
-    // Use the output here
-
-    wrist.setVoltage(output + wrFF.calculate(setpoint, 15));
+    // Use the output here 
+    wrist.setVoltage(output + customFFCalc(setpoint));
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    double encVal = wrEnc.getAbsolutePosition() * 360;
+    return sensors.getWristAngle();
+  }
 
-    SmartDashboard.putNumber("wrPos", encVal);
+  public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
+    double qs = sensors.getShoulderAngle();
+    double qe = sensors.getElbowAngle();
+    double qw = sensors.getWristAngle();
 
-    return encVal;
+    double csew = Math.cos(qs + qe + qw);
+    
+    double gWrist = ACCEL_G * csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
+
+    return KS * Math.signum(goalPosition - qw) + (-12 * gWrist / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
+  }
+
+  public Command setPosition(double degrees){
+    return this.runOnce(() -> setSetpoint(degrees));
   }
 }

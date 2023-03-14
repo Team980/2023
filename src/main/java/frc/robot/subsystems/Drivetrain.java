@@ -133,6 +133,9 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Front Amps", pdh.getCurrent(2));
     SmartDashboard.putNumber("Left Back Amps", pdh.getCurrent(3));
     SmartDashboard.putNumber("Left Top Amps", pdh.getCurrent(7));
+    SmartDashboard.putNumber("Shoulder Amps", pdh.getCurrent(1));
+    SmartDashboard.putNumber("Elbow Amps", pdh.getCurrent(9));
+    SmartDashboard.putNumber("Wrist Amps", pdh.getCurrent(8));
 
     SmartDashboard.putNumber("KP Right", rightDrive.getController().getP());
     SmartDashboard.putNumber("KP Left", leftDrive.getController().getP());
@@ -186,3 +189,4 @@ public class Drivetrain extends SubsystemBase {
     rightDrive.setManualOverride(false);
   }
 }
+//hi
