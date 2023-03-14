@@ -6,11 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -21,6 +17,7 @@ public class Elbow extends PIDSubsystem {
 
   private final double KS = .05;
   private final double GEAR_RATIO = 100;
+  private final double POSITION_TOLERANCE = 5;
 
   private WPI_TalonSRX elbow;
 
@@ -31,6 +28,7 @@ public class Elbow extends PIDSubsystem {
 
         elbow = new WPI_TalonSRX(9);
         this.sensors = sensors;
+        super.getController().setTolerance(POSITION_TOLERANCE);
         //enable();
   }
 
@@ -61,7 +59,10 @@ public class Elbow extends PIDSubsystem {
     return KS * Math.signum(goalPosition - qe) + (-12 * gElbow / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
   }
 
-  public Command setPosition(double degrees){
-    return this.runOnce(() -> setSetpoint(degrees));
+  public void kindaManual(double move) {
+    if(Math.abs(move) > 0.2) {
+      setSetpoint(move + getMeasurement());
+    }
   }
+
 }
