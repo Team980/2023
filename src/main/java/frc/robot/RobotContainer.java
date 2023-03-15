@@ -44,7 +44,10 @@ public class RobotContainer {
   private final CommandJoystick throttle = new CommandJoystick(1);
   private final CommandJoystick prajBox = new CommandJoystick(4);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final double[] test0 = {0, 0, 0};
+  private final double[] test1 = {-180, 0, 0};
+  private final double[] test2 = {-90, 160, 0};
+ /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     /*drivetrain.setDefaultCommand(Commands.run(
@@ -78,6 +81,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    xbox.b().onTrue(Commands.runOnce(
+      () -> shoulder.setSetpoint(5),
+    shoulder
+  ));
+    xbox.x().onTrue(Commands.runOnce(
+      () -> shoulder.setSetpoint(-185),
+    shoulder
+  ));
+    xbox.a().onTrue(Commands.runOnce(
+      () -> shoulder.setSetpoint(-95),
+    shoulder
+  ));
+
     xbox.rightStick().onTrue(shifter.setGear(false));
     xbox.leftStick().onTrue(shifter.setGear(true));
     /*throttle.button(5).onTrue(new RunCommand(
