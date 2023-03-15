@@ -12,7 +12,7 @@ import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 
 public class ArmMovementCommand extends CommandBase {
-  private final double[] PARKED_POSITION = {0 , 0 , 0};//TODO need parked numbers
+  private final double[] PARKED_POSITION = {-90 , 0 , 0};//TODO need parked numbers
   private final double S_PREP_FOR_PARK = 90;//the position the shoulder needs to be in before the rest can fold in, should only need it for one side
   private Shoulder shoulder;
   private Elbow elbow;
@@ -32,9 +32,7 @@ public class ArmMovementCommand extends CommandBase {
       changingSides = true;
     }
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shoulder);
-    addRequirements(elbow);
-    addRequirements(wrist);
+    addRequirements(shoulder , elbow , wrist);
   }
 
   // Called when the command is initially scheduled.

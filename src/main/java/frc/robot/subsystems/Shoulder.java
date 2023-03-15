@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -15,7 +16,7 @@ public class Shoulder extends PIDSubsystem {
 
   private ArmSensors sensors;
 
-  private final double KS = .05;
+  private final double KS = .2;
   private final double GEAR_RATIO = 600;
   private final double POSITION_TOLERANCE = 5;
 
@@ -25,9 +26,10 @@ public class Shoulder extends PIDSubsystem {
   public Shoulder(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
-        new PIDController(12.0 / 90, 0, 0));
+        new PIDController(12.0 / 120, 0, 0));
 
         shoulder = new WPI_TalonSRX(11);
+        shoulder.setInverted(true);
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
         //enable();
@@ -38,6 +40,8 @@ public class Shoulder extends PIDSubsystem {
     // Use the output here
 
     shoulder.setVoltage(output + customFFCalc(setpoint));
+    SmartDashboard.putNumber("S_PIDOut", output);
+    SmartDashboard.putNumber("S_FF", customFFCalc(setpoint));
 
   }
 
@@ -56,15 +60,16 @@ public class Shoulder extends PIDSubsystem {
     double qe = sensors.getElbowAngle();
     double qw = sensors.getWristAngle();
 
-    double cs = Math.cos(qs);
-    double cse = Math.cos(qs + qe);
-    double csew = Math.cos(qs + qe + qw);
+    double cs = Math.cos(Math.toRadians(qs));
+    double cse = Math.cos(Math.toRadians(qs + qe));
+    double csew = Math.cos(Math.toRadians(qs + qe + qw));
 
-    double gShoulder = ACCEL_G * (cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + EL_SEGMENT_MASS * SHO_SEGMENT_LENGTH + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
+    double gShoulder = cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + EL_SEGMENT_MASS * SHO_SEGMENT_LENGTH + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
       cse * (EL_SEGMENT_MASS * EL_CG_FROM_JOINT + W_SEGMENT_MASS * EL_SEGMENT_LENGTH) + 
-      csew * W_SEGMENT_MASS * W_CG_FROM_JOINT);
+      csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
 
-    return KS * Math.signum(goalPosition - qs) + (-12 * gShoulder / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO)); //-12 change to voltage and oppose gravity
+    return KS * Math.signum(goalPosition - qs) + (12 * gShoulder / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO)); //12 change to voltage
+    
 }
 
   public void kindaManual(double move) {

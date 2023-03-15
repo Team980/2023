@@ -30,14 +30,14 @@ public class ArmSensors extends SubsystemBase {
 
   //all need offsets for 90 parallel to ground when straight out
   public double getShoulderAngle(){
-    return shoulder.getAbsolutePosition() * 360;
+    return shoulder.getAbsolutePosition() * 360;//TODO offset
   }
 
   public double getElbowAngle(){
-    return elbow.getAbsolutePosition() * 360;
+    return elbow.getAbsolutePosition() * 360;//TODO offset
   }
 
   public double getWristAngle(){
-    return wrist.getAbsolutePosition() * 360;
+    return wrist.getAbsolutePosition() * 360;//TODO offset
   }
 }

@@ -31,7 +31,7 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
   private double outputVoltage;
 
   //debugging variables
-  private double PIDOutput = 0;
+  //private double PIDOutput = 0;
   
 
   /** Creates a new PIDMotorGroup. */
@@ -56,19 +56,20 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
           ffHigh = new SimpleMotorFeedforward(ksHigh, 12.0/maxVelocityHigh);
           
   }
-  public double getPIDOutput(){//debugging method
+  /*public double getPIDOutput(){//debugging method
     return PIDOutput;
-  }
+  }*/
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    PIDOutput = output;
+    //PIDOutput = output;
 
     if(inLowGear) {
       outputVoltage = output + ffLow.calculate(setpoint);
       motors.setVoltage(outputVoltage);
-    } else {
+    } 
+    else {
       outputVoltage = output + ffHigh.calculate(setpoint);
       motors.setVoltage(outputVoltage);
     }
@@ -82,8 +83,7 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
 
   @Override
   public void set(double speed) {
-    // TODO Auto-generated method stub
-      if(manualOverride) {
+    if(manualOverride) {
       motors.setVoltage(speed * 12);
     } 
     else if(inLowGear) {
@@ -96,28 +96,25 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
 
   @Override
   public double get() {
-    // TODO Auto-generated method stub
     return motors.get();
   }
 
   @Override
   public void setInverted(boolean isInverted) {
-    // TODO Auto-generated method stub
     motors.setInverted(isInverted);
   }
 
   @Override
   public boolean getInverted() {
-    // TODO Auto-generated method stub
     return motors.getInverted();
   }
 
   @Override
   public void stopMotor() {
-    // TODO Auto-generated method stub
     if(manualOverride) {
       motors.stopMotor();
-    } else {
+    } 
+    else {
       setSetpoint(0);
     }
   }

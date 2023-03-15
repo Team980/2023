@@ -48,11 +48,11 @@ public class Wrist extends PIDSubsystem {
     double qe = sensors.getElbowAngle();
     double qw = sensors.getWristAngle();
 
-    double csew = Math.cos(qs + qe + qw);
+    double csew = Math.cos(Math.toRadians(qs + qe + qw));
     
-    double gWrist = ACCEL_G * csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
+    double gWrist = csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
 
-    return KS * Math.signum(goalPosition - qw) + (-12 * gWrist / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
+    return KS * Math.signum(goalPosition - qw) + (12 * gWrist / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
   }
 
   public void kindaManual(double move) {

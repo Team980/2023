@@ -21,19 +21,19 @@ public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
   private double MAX_VELOCITY_LOW_RIGHT = 4.5;
   private double MAX_VELOCITY_LOW_LEFT = 4.75; 
-  private double MAX_VELOCITY_HIGH_RIGHT = 17.0; // TODO
-  private double MAX_VELOCITY_HIGH_LEFT = 18.0; // TODO
+  private double MAX_VELOCITY_HIGH_RIGHT = 17.0;
+  private double MAX_VELOCITY_HIGH_LEFT = 18.0;
 
   private double SPEED_LIMIT_LOW = 4.25; 
-  private double SPEED_LIMIT_HIGH = 16.0; // TODO
+  private double SPEED_LIMIT_HIGH = 16.0;
 
   private double KS_LOW_RIGHT = 0.05; //3.25  TODO
   private double KS_HIGH_RIGHT = 1.0; //3.5  TODO
   private double KS_LOW_LEFT = 0.05; //3.25  TODO
   private double KS_HIGH_LEFT = 1.0; //3.5  TODO
 
-  private double KP_LOW = 2.1; // TODO
-  private double KP_HIGH = 0.5; // TODO
+  private double KP_LOW = 2.1;
+  private double KP_HIGH = 0.5;
 
   private PIDMotorGroup leftDrive;
   private PIDMotorGroup rightDrive;
@@ -50,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
   //private double [] ypr;
 
   public Drivetrain() {
-    //var collectorTalon = new WPI_TalonSRX(7); // TODO may not need
+    //var collectorTalon = new WPI_TalonSRX(7); // TODO Use an actual drive Talon
     //imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
     //generalStatus = new PigeonIMU.GeneralStatus();
     //ypr = new double [3];
@@ -60,7 +60,7 @@ public class Drivetrain extends SubsystemBase {
     var leftFront = new WPI_TalonSRX(2);
     leftTop.setInverted(true);
     
-    leftTop.setNeutralMode(NeutralMode.Coast); // TODO decide on brake or coast 
+    leftTop.setNeutralMode(NeutralMode.Coast);
     leftBack.setNeutralMode(NeutralMode.Coast);
     leftFront.setNeutralMode(NeutralMode.Coast);
     
@@ -73,7 +73,7 @@ public class Drivetrain extends SubsystemBase {
     var rightFront = new WPI_TalonSRX(5);
     rightTop.setInverted(true);
 
-    rightTop.setNeutralMode(NeutralMode.Coast); // TODO decide on brake or coast :P
+    rightTop.setNeutralMode(NeutralMode.Coast);
     rightBack.setNeutralMode(NeutralMode.Coast);
     rightFront.setNeutralMode(NeutralMode.Coast);
 
@@ -121,12 +121,6 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Distance", leftEncoder.getDistance() );
     SmartDashboard.putNumber("Right Distance", rightEncoder.getDistance() );
 
-    //debugging prints
-    SmartDashboard.putNumber("leftPIDout", leftDrive.getPIDOutput());
-    SmartDashboard.putNumber("leftSetPoint", leftDrive.getSetpoint());
-    SmartDashboard.putNumber("rightPIDout", rightDrive.getPIDOutput());
-    SmartDashboard.putNumber("rightSetPoint", rightDrive.getSetpoint());
-
     SmartDashboard.putNumber("Right Front Amps", pdh.getCurrent(5));
     SmartDashboard.putNumber("Right Back Amps", pdh.getCurrent(6));
     SmartDashboard.putNumber("Right Top Amps", pdh.getCurrent(4));
@@ -137,8 +131,15 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Elbow Amps", pdh.getCurrent(9));
     SmartDashboard.putNumber("Wrist Amps", pdh.getCurrent(8));
 
+    //debugging prints
+    /*SmartDashboard.putNumber("leftPIDout", leftDrive.getPIDOutput());
+    SmartDashboard.putNumber("leftSetPoint", leftDrive.getSetpoint());
+    SmartDashboard.putNumber("rightPIDout", rightDrive.getPIDOutput());
+    SmartDashboard.putNumber("rightSetPoint", rightDrive.getSetpoint());
     SmartDashboard.putNumber("KP Right", rightDrive.getController().getP());
-    SmartDashboard.putNumber("KP Left", leftDrive.getController().getP());
+    SmartDashboard.putNumber("KP Left", leftDrive.getController().getP());*/
+
+
   }
 
   public void stop(){
