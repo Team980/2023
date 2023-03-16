@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -30,7 +31,7 @@ public class Elbow extends PIDSubsystem {
 
         elbow = new WPI_TalonSRX(9);
         elbow.setInverted(true);
-        //elbow.setNeutralMode(NeutralMode.Brake);
+        elbow.setNeutralMode(NeutralMode.Brake);
 
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
@@ -75,10 +76,17 @@ public class Elbow extends PIDSubsystem {
     return KS * Math.signum(goalPosition - qe) + (12 * gElbow / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
   }
 
-  public void kindaManual(double move) {
-    if(Math.abs(move) > 0.2) {
-      setSetpoint(move + getMeasurement());
+  public void kindaManualE(double moveF , double moveR) {
+    if(Math.abs(moveF) > 0.2) {
+      setSetpoint(moveF + getSetpoint());
     }
+    else if(Math.abs(moveR) > 0.2){
+      setSetpoint(moveR + getSetpoint());
+    }
+  }
+
+  public CommandBase holdPosition(){
+    return this.runOnce(() -> setSetpoint(getMeasurement()));
   }
 
 }

@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmSensors;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
@@ -17,8 +15,6 @@ import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -45,9 +41,6 @@ public class RobotContainer {
   private final CommandJoystick throttle = new CommandJoystick(1);
   private final CommandJoystick prajBox = new CommandJoystick(4);
 
-  private final double[] test0 = {0, 0, 0};
-  private final double[] test1 = {-180, 0, 0};
-  private final double[] test2 = {-90, 0, 0};
  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -63,11 +56,16 @@ public class RobotContainer {
       shoulder
        ));
 
-    /*elbow.setDefaultCommand(Commands.run(
-      () -> elbow.runElbow(-xbox.getRightY()),
+    elbow.setDefaultCommand(Commands.run(
+      () -> elbow.kindaManualE(xbox.getLeftTriggerAxis() , xbox.getRightTriggerAxis()),
       elbow
-      ));*/
-      
+       ));
+
+    wrist.setDefaultCommand(Commands.run(
+      () -> wrist.kindaManual(-xbox.getRightY()),
+      wrist
+       ));
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -82,28 +80,35 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.b().onTrue(Commands.runOnce(
+    xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , elbow.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
+    xbox.a().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 1));//floor
+    xbox.b().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 2));//mid
+    xbox.y().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 3));//high
+    xbox.x().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 0));//park
+    xbox.povRight().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 4));//human station
+    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
+
+    xbox.rightBumper().onTrue(wrist.open(true));
+    xbox.leftBumper().onTrue(wrist.open(false));
+  
+    /*xbox.b().onTrue(Commands.runOnce(
       () -> elbow.setSetpoint(75),
     elbow
   ));
-    /*xbox.x().onTrue(Commands.runOnce(
+    xbox.x().onTrue(Commands.runOnce(
       () -> elbow.setSetpoint(-90),
     elbow
-  ));*/
+  ));
     xbox.a().onTrue(Commands.runOnce(
       () -> elbow.setSetpoint(165),
     elbow
-  ));
-
-  /*xbox.b().onTrue(new ArmMovementCommand(shoulder, elbow, wrist, test0));
-  xbox.x().onTrue(new ArmMovementCommand(shoulder, elbow, wrist, test1));
-  xbox.a().onTrue(new ArmMovementCommand(shoulder, elbow, wrist, test2)); */
+  ));*/
 
   throttle.button(4).onTrue(shifter.setGear(false));
   throttle.button(3).onTrue(shifter.setGear(true));
+  //prajBox.button(0).onTrue(drivetrain.reverseFront(true)).onFalse(drivetrain.reverseFront(false));
+  throttle.povUp().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
 
-  xbox.rightBumper().onTrue(wrist.open(true));
-  xbox.leftBumper().onTrue(wrist.open(false));
 
   // xbox.start().onTrue(new InstantCommand(drivetrain::enableManualOverride, drivetrain));
   // xbox.back().onTrue(new InstantCommand(drivetrain::disableManualOverride, drivetrain));

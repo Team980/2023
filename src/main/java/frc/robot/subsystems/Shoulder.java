@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -85,5 +86,9 @@ public class Shoulder extends PIDSubsystem {
     if(Math.abs(move) > 0.2) {
       setSetpoint(move + getSetpoint());
     }
+  }
+
+  public CommandBase holdPosition(){
+    return this.runOnce(() -> setSetpoint(getMeasurement()));
   }
 }

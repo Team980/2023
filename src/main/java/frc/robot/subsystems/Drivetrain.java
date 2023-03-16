@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -49,6 +50,8 @@ public class Drivetrain extends SubsystemBase {
   private int imuErrorCode;
   private double [] ypr;
 
+  private int frontChanger;
+
   public Drivetrain() {
     var collectorTalon = new WPI_TalonSRX(4); // TODO Use an actual drive Talon
     imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
@@ -85,6 +88,7 @@ public class Drivetrain extends SubsystemBase {
     robotDrive = new DifferentialDrive(leftDrive, rightDrive);
 
     pdh = new PowerDistribution();//This needs to be CAN ID 1
+    frontChanger = 1;
 
   }
 
@@ -104,8 +108,21 @@ public class Drivetrain extends SubsystemBase {
       turn = 0;
     }
     
-      robotDrive.arcadeDrive(move, turn);
+      robotDrive.arcadeDrive(move * frontChanger, turn);
 
+  }
+
+  /*public CommandBase reverseFront(boolean reverse){
+    if(reverse){
+      return this.runOnce(() -> frontChanger = -1);
+    }
+    else {
+      return this.runOnce(() -> frontChanger = 1);
+    }
+  }*/
+
+  public void reverseFrontToggle(){
+    frontChanger *= -1;
   }
 
   @Override

@@ -9,9 +9,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -68,24 +67,16 @@ public class Wrist extends PIDSubsystem {
 
   public void kindaManual(double move) {
     if(Math.abs(move) > 0.2) {
-      setSetpoint(move + getMeasurement());
+      setSetpoint(move + getSetpoint());
     }
   }
 
+  public CommandBase holdPosition(){
+    return this.runOnce(() -> setSetpoint(getMeasurement()));
+  }
 
-  /*public Command setGear(boolean low){
-    if(low){
-      drivetrain.shiftGear(true);
-      return this.run(() -> shifter.set(true));
-    }
-    else {
-      drivetrain.shiftGear(false);
-      return this.run(() -> shifter.set(false));
-    }
-  }*/
-
-  public Command open(boolean isOpen) {
-    if(isOpen) {
+  public CommandBase open(boolean openGrab) {
+    if(openGrab) {
       return this.runOnce(() -> wheelyGrab.set(Value.kForward));
     }
     else {
