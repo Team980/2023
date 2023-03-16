@@ -7,6 +7,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -18,6 +23,8 @@ public class Wrist extends PIDSubsystem {
   private final double GEAR_RATIO = 100;
   private final double POSITION_TOLERANCE = 5;
 
+  private DoubleSolenoid wheelyGrab;
+
   private WPI_TalonSRX wrist; 
 
   public Wrist(ArmSensors sensors) {
@@ -28,6 +35,7 @@ public class Wrist extends PIDSubsystem {
         wrist = new WPI_TalonSRX(8);
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
+        wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
         //enable();
   }
 
@@ -39,6 +47,9 @@ public class Wrist extends PIDSubsystem {
 
   @Override
   public double getMeasurement() {
+    if(!sensors.getSCon() || !sensors.getECon() || !sensors.getWCon()){
+      disable();
+    }
     // Return the process variable measurement here
     return sensors.getWristAngle();
   }
@@ -61,4 +72,24 @@ public class Wrist extends PIDSubsystem {
     }
   }
 
+
+  /*public Command setGear(boolean low){
+    if(low){
+      drivetrain.shiftGear(true);
+      return this.run(() -> shifter.set(true));
+    }
+    else {
+      drivetrain.shiftGear(false);
+      return this.run(() -> shifter.set(false));
+    }
+  }*/
+
+  public Command open(boolean isOpen) {
+    if(isOpen) {
+      return this.runOnce(() -> wheelyGrab.set(Value.kForward));
+    }
+    else {
+      return this.runOnce(() -> wheelyGrab.set(Value.kReverse));
+    }
+  }
 }

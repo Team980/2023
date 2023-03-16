@@ -13,7 +13,7 @@ import frc.robot.subsystems.Wrist;
 
 public class ArmMovementCommand extends CommandBase {
   private final double[] PARKED_POSITION = {-90 , 0 , 0};//TODO need parked numbers
-  private final double S_PREP_FOR_PARK = 90;//the position the shoulder needs to be in before the rest can fold in, should only need it for one side
+  private final double S_PREP_FOR_PARK = -180;//the position the shoulder needs to be in before the rest can fold in, should only need it for one side
   private Shoulder shoulder;
   private Elbow elbow;
   private Wrist wrist;
@@ -25,14 +25,15 @@ public class ArmMovementCommand extends CommandBase {
     this.elbow = elbow;
     this.wrist = wrist;
     this.positionList = positionList;
-    if(shoulder.getMeasurement() * positionList[0] >= 0){
+    /*if((shoulder.getMeasurement() < 0 && positionList[0] < 0) || (shoulder.getMeasurement() >= 0 && positionList[0] >= 0)){
       changingSides = false;
     }
     else{
       changingSides = true;
-    }
+    }*/
+    changingSides = false;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shoulder , elbow , wrist);
+    addRequirements(shoulder);
   }
 
   // Called when the command is initially scheduled.
@@ -44,16 +45,16 @@ public class ArmMovementCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(changingSides || Arrays.equals(PARKED_POSITION , positionList)){
-      if(Math.abs(S_PREP_FOR_PARK - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance() || shoulder.getMeasurement() < 0){
+    if(changingSides /*|| Arrays.equals(PARKED_POSITION , positionList)*/){
+      if(Math.abs(S_PREP_FOR_PARK - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance() && shoulder.getMeasurement() < -90){
         shoulder.setSetpoint(S_PREP_FOR_PARK);
       }//TODO assume parked arm faces forward andf forward is the positive angle side
-      else if(Math.abs(PARKED_POSITION[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
+      /*else if(Math.abs(PARKED_POSITION[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(PARKED_POSITION[2]);
       }
       else if(Math.abs(PARKED_POSITION[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(PARKED_POSITION[1]);
-      }
+      }*/
       else if(Math.abs(PARKED_POSITION[0] - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance()){
         shoulder.setSetpoint(PARKED_POSITION[0]);
       }
@@ -65,12 +66,12 @@ public class ArmMovementCommand extends CommandBase {
       if(Math.abs(positionList[0] - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance()){
         shoulder.setSetpoint(positionList[0]);
       }
-      else if(Math.abs(positionList[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
+      /*else if(Math.abs(positionList[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(positionList[1]);
       }
       else if(Math.abs(positionList[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(positionList[2]);
-      }
+      }*/
 
     }
   }
@@ -82,6 +83,6 @@ public class ArmMovementCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shoulder.getController().atSetpoint() && elbow.getController().atSetpoint() && wrist.getController().atSetpoint();
+    return shoulder.getController().atSetpoint() /*&& elbow.getController().atSetpoint() && wrist.getController().atSetpoint()*/;
   }
 }

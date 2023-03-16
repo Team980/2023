@@ -14,6 +14,10 @@ public class ArmSensors extends SubsystemBase {
   private DutyCycleEncoder elbow;
   private DutyCycleEncoder wrist;
 
+  private boolean sConnect;
+  private boolean eConnect;
+  private boolean wConnect;
+
   public ArmSensors() {
     shoulder = new DutyCycleEncoder(4);
     elbow = new DutyCycleEncoder(5);
@@ -22,6 +26,12 @@ public class ArmSensors extends SubsystemBase {
 
   @Override
   public void periodic() {
+    sConnect = shoulder.isConnected();
+    SmartDashboard.putBoolean("s con", sConnect);
+    eConnect = elbow.isConnected();
+    SmartDashboard.putBoolean("e con", eConnect);
+    wConnect = wrist.isConnected();
+    SmartDashboard.putBoolean("w con", wConnect);
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("shoPos", getShoulderAngle());  // see what all positions are :D
     SmartDashboard.putNumber("elPos", getElbowAngle());
@@ -39,5 +49,15 @@ public class ArmSensors extends SubsystemBase {
 
   public double getWristAngle(){
     return wrist.getAbsolutePosition() * 360;//TODO offset
+  }
+
+  public boolean getSCon(){
+    return sConnect;
+  }
+  public boolean getECon(){
+    return eConnect;
+  }
+  public boolean getWCon(){
+    return wConnect;
   }
 }

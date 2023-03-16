@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,10 +30,14 @@ public class Shoulder extends PIDSubsystem {
         new PIDController(12.0 / 120, 0, 0));
 
         shoulder = new WPI_TalonSRX(11);
+
+        shoulder.setNeutralMode(NeutralMode.Brake);
+
         shoulder.setInverted(true);
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
-        //enable();
+        enable();
+        setSetpoint(-90);
   }
 
   @Override
@@ -51,6 +56,10 @@ public class Shoulder extends PIDSubsystem {
 
   @Override
   public double getMeasurement() {
+    if(!sensors.getSCon() || !sensors.getECon() || !sensors.getWCon()){
+      disable();
+    }
+
     // Return the process variable measurement here
     return sensors.getShoulderAngle();
   }
@@ -74,7 +83,7 @@ public class Shoulder extends PIDSubsystem {
 
   public void kindaManual(double move) {
     if(Math.abs(move) > 0.2) {
-      setSetpoint(move + getMeasurement());
+      setSetpoint(move + getSetpoint());
     }
   }
 }

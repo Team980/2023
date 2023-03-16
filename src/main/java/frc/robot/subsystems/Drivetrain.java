@@ -44,16 +44,16 @@ public class Drivetrain extends SubsystemBase {
   private PowerDistribution pdh;
 
 
-  //private PigeonIMU imu;
-  //private PigeonIMU.GeneralStatus generalStatus;
-  //private int imuErrorCode;
-  //private double [] ypr;
+  private PigeonIMU imu;
+  private PigeonIMU.GeneralStatus generalStatus;
+  private int imuErrorCode;
+  private double [] ypr;
 
   public Drivetrain() {
-    //var collectorTalon = new WPI_TalonSRX(7); // TODO Use an actual drive Talon
-    //imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
-    //generalStatus = new PigeonIMU.GeneralStatus();
-    //ypr = new double [3];
+    var collectorTalon = new WPI_TalonSRX(4); // TODO Use an actual drive Talon
+    imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
+    generalStatus = new PigeonIMU.GeneralStatus();
+    ypr = new double [3];
 
     var leftTop = new WPI_TalonSRX(7);
     var leftBack = new WPI_TalonSRX(3);
@@ -111,10 +111,10 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //imuErrorCode = imu.getGeneralStatus(generalStatus).value;
-    //imu.getYawPitchRoll(ypr);
-    //SmartDashboard.putNumber("IMU Health", imuErrorCode);
-    //SmartDashboard.putNumber("IMU Yaw", ypr[0]);
+    imuErrorCode = imu.getGeneralStatus(generalStatus).value;
+    imu.getYawPitchRoll(ypr);
+    SmartDashboard.putNumber("IMU Health", imuErrorCode);
+    SmartDashboard.putNumber("IMU Yaw", ypr[0]);
     SmartDashboard.putNumber("Left Speed", leftEncoder.getRate() );
     SmartDashboard.putNumber("Right Speed", rightEncoder.getRate() );
 
@@ -168,17 +168,17 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder.reset();
   }
 
-  /*public int getIMUHealth(){
+  public int getIMUHealth(){
     return imuErrorCode;
-  }*/
+  }
 
-  /*public double [] getYPR() {
+  public double [] getYPR() {
     return ypr;
-  }*/
+  }
 
-  /*public void resetYaw(double value){
+  public void resetYaw(double value){
     imu.setYaw(value);
-  }*/
+  }
 
   public void enableManualOverride() {
     leftDrive.setManualOverride(true);

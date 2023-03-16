@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
@@ -15,7 +17,7 @@ public class Elbow extends PIDSubsystem {
 
   private ArmSensors sensors;
 
-  private final double KS = .05;
+  private final double KS = .1;
   private final double GEAR_RATIO = 100;
   private final double POSITION_TOLERANCE = 5;
 
@@ -24,23 +26,37 @@ public class Elbow extends PIDSubsystem {
   public Elbow(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
-        new PIDController(12.0 / 90, 0, 0));
+        new PIDController(12.0 / 180, 0, 0));
 
         elbow = new WPI_TalonSRX(9);
+        elbow.setInverted(true);
+        //elbow.setNeutralMode(NeutralMode.Brake);
+
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
-        //enable();
+        enable();
+        setSetpoint(165);
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
+    SmartDashboard.putNumber("E_PIDOut", output);
+    SmartDashboard.putNumber("E_FF", customFFCalc(setpoint));
 
-    elbow.setVoltage(output + customFFCalc(setpoint));  // TODO figure out how fast we want it to move
+    elbow.setVoltage(output + customFFCalc(setpoint));
+  }
+
+  public void runElbow(double speed) {
+    elbow.set(speed);
   }
 
   @Override
   public double getMeasurement() {
+    if(!sensors.getSCon() || !sensors.getECon() || !sensors.getWCon()){
+      disable();
+    }
+
     // Return the process variable measurement here
     return sensors.getElbowAngle();
   }

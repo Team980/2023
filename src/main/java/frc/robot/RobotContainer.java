@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmSensors;
@@ -46,27 +47,27 @@ public class RobotContainer {
 
   private final double[] test0 = {0, 0, 0};
   private final double[] test1 = {-180, 0, 0};
-  private final double[] test2 = {-90, 160, 0};
+  private final double[] test2 = {-90, 0, 0};
  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    /*drivetrain.setDefaultCommand(Commands.run(
-      () -> drivetrain.driveRobot(-xbox.getLeftY(), -xbox.getRightX()), 
+    drivetrain.setDefaultCommand(Commands.run(
+      () -> drivetrain.driveRobot(throttle.getY(), wheel.getX()), 
       drivetrain
-      )); */
+      )); 
 
-    //shifter.setDefaultCommand(shifter.setGear(true));
+    shifter.setDefaultCommand(shifter.setGear(true));
 
     shoulder.setDefaultCommand(Commands.run(
-      () -> shoulder.runShoulder(xbox.getLeftY()),
+      () -> shoulder.kindaManual(-xbox.getLeftY()),
       shoulder
-    ));
+       ));
 
-    /*shoulder.setDefaultCommand(new RunCommand(
-      () -> shoulder.kindaManual(xbox.getLeftTriggerAxis()),
-      shoulder
-       ));*/
-       
+    /*elbow.setDefaultCommand(Commands.run(
+      () -> elbow.runElbow(-xbox.getRightY()),
+      elbow
+      ));*/
+      
     // Configure the trigger bindings
     configureBindings();
   }
@@ -82,27 +83,30 @@ public class RobotContainer {
    */
   private void configureBindings() {
     xbox.b().onTrue(Commands.runOnce(
-      () -> shoulder.setSetpoint(5),
-    shoulder
+      () -> elbow.setSetpoint(75),
+    elbow
   ));
-    xbox.x().onTrue(Commands.runOnce(
-      () -> shoulder.setSetpoint(-185),
-    shoulder
-  ));
+    /*xbox.x().onTrue(Commands.runOnce(
+      () -> elbow.setSetpoint(-90),
+    elbow
+  ));*/
     xbox.a().onTrue(Commands.runOnce(
-      () -> shoulder.setSetpoint(-95),
-    shoulder
+      () -> elbow.setSetpoint(165),
+    elbow
   ));
 
-    xbox.rightStick().onTrue(shifter.setGear(false));
-    xbox.leftStick().onTrue(shifter.setGear(true));
-    /*throttle.button(5).onTrue(new RunCommand(
-      () -> shifter.autoShift(),
-      shifter
-      ));*/
+  /*xbox.b().onTrue(new ArmMovementCommand(shoulder, elbow, wrist, test0));
+  xbox.x().onTrue(new ArmMovementCommand(shoulder, elbow, wrist, test1));
+  xbox.a().onTrue(new ArmMovementCommand(shoulder, elbow, wrist, test2)); */
 
-    xbox.start().onTrue(new InstantCommand(drivetrain::enableManualOverride, drivetrain));
-    xbox.back().onTrue(new InstantCommand(drivetrain::disableManualOverride, drivetrain));
+  throttle.button(4).onTrue(shifter.setGear(false));
+  throttle.button(3).onTrue(shifter.setGear(true));
+
+  xbox.rightBumper().onTrue(wrist.open(true));
+  xbox.leftBumper().onTrue(wrist.open(false));
+
+  // xbox.start().onTrue(new InstantCommand(drivetrain::enableManualOverride, drivetrain));
+  // xbox.back().onTrue(new InstantCommand(drivetrain::disableManualOverride, drivetrain));
 
     /* Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
