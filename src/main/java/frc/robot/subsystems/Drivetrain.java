@@ -88,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
     robotDrive = new DifferentialDrive(leftDrive, rightDrive);
 
     pdh = new PowerDistribution();//This needs to be CAN ID 1
-    frontChanger = 1;
+    frontChanger = -1;
 
   }
 
@@ -206,5 +206,6 @@ public class Drivetrain extends SubsystemBase {
     leftDrive.setManualOverride(false);
     rightDrive.setManualOverride(false);
   }
+
 }
 //hi

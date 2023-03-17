@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveOutAuto;
 import frc.robot.subsystems.ArmSensors;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
@@ -45,7 +46,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     drivetrain.setDefaultCommand(Commands.run(
-      () -> drivetrain.driveRobot(throttle.getY(), wheel.getX()), 
+      () -> drivetrain.driveRobot(-throttle.getY(), -wheel.getX()), 
       drivetrain
       )); 
 
@@ -130,6 +131,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return Autos.exampleAuto(m_exampleSubsystem);
-    return null;
+    return new DriveOutAuto(drivetrain);
   }
 }

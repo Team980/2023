@@ -48,7 +48,7 @@ public class ArmSensors extends SubsystemBase {
   }
 
   public double getWristAngle(){
-    return wrist.getAbsolutePosition() * 360;//TODO offset
+    return wrist.getAbsolutePosition() * -360 + 143;
   }
 
   public boolean getSCon(){

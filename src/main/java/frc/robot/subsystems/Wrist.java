@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,26 +30,32 @@ public class Wrist extends PIDSubsystem {
   public Wrist(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
-        new PIDController(12.0 / 90, 0, 0));
+        new PIDController(12.0 / 180, 0, 0));
 
         wrist = new WPI_TalonSRX(8);
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
-        wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
-        //enable();
+        wrist.setNeutralMode(NeutralMode.Brake);
+        wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 14);
+        disable();
+        //setSetpoint(-90);
   }
+
+  public void runWrist(double speed) {
+
+    wrist.set(speed);
+  }
+
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here 
-    wrist.setVoltage(output + customFFCalc(setpoint));
+    if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
+      wrist.setVoltage(output + customFFCalc(setpoint));
   }
 
   @Override
   public double getMeasurement() {
-    if(!sensors.getSCon() || !sensors.getECon() || !sensors.getWCon()){
-      disable();
-    }
     // Return the process variable measurement here
     return sensors.getWristAngle();
   }

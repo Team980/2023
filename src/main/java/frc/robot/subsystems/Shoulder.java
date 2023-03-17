@@ -45,7 +45,9 @@ public class Shoulder extends PIDSubsystem {
   public void useOutput(double output, double setpoint) {
     // Use the output here
 
-    shoulder.setVoltage(output + customFFCalc(setpoint));
+    if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
+      shoulder.setVoltage(output + customFFCalc(setpoint));
+
     SmartDashboard.putNumber("S_PIDOut", output);
     SmartDashboard.putNumber("S_FF", customFFCalc(setpoint));
 
@@ -57,10 +59,6 @@ public class Shoulder extends PIDSubsystem {
 
   @Override
   public double getMeasurement() {
-    if(!sensors.getSCon() || !sensors.getECon() || !sensors.getWCon()){
-      disable();
-    }
-
     // Return the process variable measurement here
     return sensors.getShoulderAngle();
   }

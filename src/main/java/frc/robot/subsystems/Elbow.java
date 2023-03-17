@@ -45,7 +45,8 @@ public class Elbow extends PIDSubsystem {
     SmartDashboard.putNumber("E_PIDOut", output);
     SmartDashboard.putNumber("E_FF", customFFCalc(setpoint));
 
-    elbow.setVoltage(output + customFFCalc(setpoint));
+    if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
+      elbow.setVoltage(output + customFFCalc(setpoint));
   }
 
   public void runElbow(double speed) {
@@ -54,9 +55,6 @@ public class Elbow extends PIDSubsystem {
 
   @Override
   public double getMeasurement() {
-    if(!sensors.getSCon() || !sensors.getECon() || !sensors.getWCon()){
-      disable();
-    }
 
     // Return the process variable measurement here
     return sensors.getElbowAngle();
