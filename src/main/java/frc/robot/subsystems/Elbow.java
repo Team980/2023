@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
 
-public class Elbow extends PIDSubsystem {
+public class Elbow extends PIDSubsystem { 
   /** Creates a new Elbow. */
 
   private ArmSensors sensors;
@@ -29,38 +29,40 @@ public class Elbow extends PIDSubsystem {
         // The PIDController used by the subsystem
         new PIDController(12.0 / 180, 0, 0));
 
-        elbow = new WPI_TalonSRX(9);
+        /*elbow = new WPI_TalonSRX(9);
         elbow.setInverted(true);
         elbow.setNeutralMode(NeutralMode.Brake);
 
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
-        enable();
-        setSetpoint(165);
+        disable();
+        setSetpoint(165); */
+
   }
 
   @Override
-  public void useOutput(double output, double setpoint) {
+  public void useOutput(double output, double setpoint) {  /*
     // Use the output here
     SmartDashboard.putNumber("E_PIDOut", output);
     SmartDashboard.putNumber("E_FF", customFFCalc(setpoint));
 
     if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
-      elbow.setVoltage(output + customFFCalc(setpoint));
+      elbow.setVoltage(output + customFFCalc(setpoint)); */
   }
 
-  public void runElbow(double speed) {
+  /*public void runElbow(double speed) {
     elbow.set(speed);
-  }
+  }*/
 
   @Override
   public double getMeasurement() {
 
     // Return the process variable measurement here
-    return sensors.getElbowAngle();
+    // return sensors.getElbowAngle();
+    return 0;
   }
 
-  public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
+  /* public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
     double qs = sensors.getShoulderAngle();
     double qe = sensors.getElbowAngle();
     double qw = sensors.getWristAngle();
@@ -85,6 +87,6 @@ public class Elbow extends PIDSubsystem {
 
   public CommandBase holdPosition(){
     return this.runOnce(() -> setSetpoint(getMeasurement()));
-  }
+  } */
 
 }

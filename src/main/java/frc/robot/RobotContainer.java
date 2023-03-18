@@ -14,6 +14,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shifter;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -27,9 +28,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  
+  private final PowerDistribution pdh = new PowerDistribution();
   // The robot's subsystems and commands are defined here...
-  private final Drivetrain drivetrain = new Drivetrain();
+  private final Drivetrain drivetrain = new Drivetrain(pdh);
   private final Shifter shifter  = new Shifter (drivetrain);
   private final ArmSensors armSensors = new ArmSensors();
   private final Shoulder shoulder = new Shoulder(armSensors);
@@ -53,17 +54,17 @@ public class RobotContainer {
     shifter.setDefaultCommand(shifter.setGear(true));
 
     shoulder.setDefaultCommand(Commands.run(
-      () -> shoulder.kindaManual(-xbox.getLeftY()),
+      () -> shoulder.runShoulder(-xbox.getLeftY()),
       shoulder
        ));
 
-    elbow.setDefaultCommand(Commands.run(
+    /*elbow.setDefaultCommand(Commands.run(
       () -> elbow.kindaManualE(xbox.getLeftTriggerAxis() , xbox.getRightTriggerAxis()),
       elbow
-       ));
+       )); */
 
     wrist.setDefaultCommand(Commands.run(
-      () -> wrist.kindaManual(-xbox.getRightY()),
+      () -> wrist.runWrist(-xbox.getRightY()),
       wrist
        ));
 
@@ -81,16 +82,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , elbow.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
+    xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
     xbox.a().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 1));//floor
     xbox.b().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 2));//mid
     xbox.y().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 3));//high
     xbox.x().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 0));//park
     xbox.povRight().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 4));//human station
-    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
+    // xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
 
-    xbox.rightBumper().onTrue(wrist.open(true));
-    xbox.leftBumper().onTrue(wrist.open(false));
+    //xbox.rightBumper().onTrue(wrist.open(true));
+    //xbox.leftBumper().onTrue(wrist.open(false));
   
     /*xbox.b().onTrue(Commands.runOnce(
       () -> elbow.setSetpoint(75),
@@ -105,8 +106,8 @@ public class RobotContainer {
     elbow
   ));*/
 
-  throttle.button(4).onTrue(shifter.setGear(false));
-  throttle.button(3).onTrue(shifter.setGear(true));
+  throttle.button(3).onTrue(shifter.setGear(false));
+  throttle.button(4).onTrue(shifter.setGear(true));
   //prajBox.button(0).onTrue(drivetrain.reverseFront(true)).onFalse(drivetrain.reverseFront(false));
   throttle.povUp().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
 

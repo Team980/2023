@@ -39,22 +39,22 @@ public class Shifter extends SubsystemBase {
 
   public void setLowGear(){
     drivetrain.shiftGear(true);
-    shifter.set(true);
+    shifter.set(false);
   }
 
   public void setHighGear(){
     drivetrain.shiftGear(false);
-    shifter.set(false);
+    shifter.set(true);
   }
 
   public CommandBase setGear(boolean low){
     if(low){
       drivetrain.shiftGear(true);
-      return this.run(() -> shifter.set(true));
+      return this.run(() -> shifter.set(false));
     }
     else {
       drivetrain.shiftGear(false);
-      return this.run(() -> shifter.set(false));
+      return this.run(() -> shifter.set(true));
     }
   }
 }

@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import static frc.robot.Constants.*;
@@ -32,13 +33,15 @@ public class Wrist extends PIDSubsystem {
         // The PIDController used by the subsystem
         new PIDController(12.0 / 180, 0, 0));
 
-        wrist = new WPI_TalonSRX(8);
+        wrist = new WPI_TalonSRX(9); // 8
+        
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
         wrist.setNeutralMode(NeutralMode.Brake);
+        wrist.setInverted(true);
         wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 14);
-        disable();
-        //setSetpoint(-90);
+        //enable();
+        //setSetpoint(90);
   }
 
   public void runWrist(double speed) {
@@ -50,8 +53,12 @@ public class Wrist extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here 
-    if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
+    if(sensors.getSCon() && sensors.getWCon()) {
       wrist.setVoltage(output + customFFCalc(setpoint));
+    }
+
+      SmartDashboard.putNumber("W_PIDOut", output);
+      SmartDashboard.putNumber("W_FF", customFFCalc(setpoint));
   }
 
   @Override
@@ -62,10 +69,10 @@ public class Wrist extends PIDSubsystem {
 
   public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
     double qs = sensors.getShoulderAngle();
-    double qe = sensors.getElbowAngle();
+    // double qe = sensors.getElbowAngle();
     double qw = sensors.getWristAngle();
 
-    double csew = Math.cos(Math.toRadians(qs + qe + qw));
+    double csew = Math.cos(Math.toRadians(qs /*+ qe*/ + qw));
     
     double gWrist = csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
 
@@ -74,12 +81,12 @@ public class Wrist extends PIDSubsystem {
 
   public void kindaManual(double move) {
     if(Math.abs(move) > 0.2) {
-      setSetpoint(move + getSetpoint());
+      setSetpoint(0.5 * move + getSetpoint());
     }
   }
 
   public CommandBase holdPosition(){
-    return this.runOnce(() -> setSetpoint(getMeasurement()));
+    return this.runOnce(() -> setSetpoint(90));
   }
 
   public CommandBase open(boolean openGrab) {

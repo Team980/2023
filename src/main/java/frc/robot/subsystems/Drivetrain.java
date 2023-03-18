@@ -52,7 +52,7 @@ public class Drivetrain extends SubsystemBase {
 
   private int frontChanger;
 
-  public Drivetrain() {
+  public Drivetrain(PowerDistribution pdh) {
     var collectorTalon = new WPI_TalonSRX(4); // TODO Use an actual drive Talon
     imu = new PigeonIMU(collectorTalon); // TODO update for real connection 
     generalStatus = new PigeonIMU.GeneralStatus();
@@ -87,7 +87,7 @@ public class Drivetrain extends SubsystemBase {
 
     robotDrive = new DifferentialDrive(leftDrive, rightDrive);
 
-    pdh = new PowerDistribution();//This needs to be CAN ID 1
+    this.pdh = pdh;//This needs to be CAN ID 1
     frontChanger = -1;
 
   }

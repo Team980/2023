@@ -12,11 +12,11 @@ import frc.robot.subsystems.Wrist;
 public class ArmMovementCommand extends CommandBase {
   //shoulder, elbow, wrist
   
-  private final double[] PARKED_POSITION_F = {-90 , 0 , 0};//TODO need parked numbers
+  private final double[] PARKED_POSITION_F = {-90 , 0 , 90};//TODO need parked numbers
   private final double[] SCORE_HIGH_F = {0, 0, 0};
-  private final double[] SCORE_MID_F = {-180, 0, 0};
-  private final double[] FLOOR_F = {-90, 0, 0};
-  private final double[] H_STATION_F = {-90, 0, 0};
+  private final double[] SCORE_MID_F = {0, 0, 0};
+  private final double[] FLOOR_F = {-45, 0, 45};
+  private final double[] H_STATION_F = {0, 0, 0};
 
   private final double[] PARKED_POSITION_R = {-90 , 0 , 0};//TODO need parked numbers
   private final double[] SCORE_HIGH_R = {0, 0, 0};
@@ -31,7 +31,7 @@ public class ArmMovementCommand extends CommandBase {
   private final double S_PREP_FOR_SWITCH_R = -180;
 
   private Shoulder shoulder;
-  private Elbow elbow;
+  // private Elbow elbow;
   private Wrist wrist;
   private int position; //0-parked, 1-floor, 2-mid, 3-high, 4-h_station, 5-switch
   private double[] rPos;
@@ -42,10 +42,10 @@ public class ArmMovementCommand extends CommandBase {
   /** Creates a new ArmMovementCommand. */
   public ArmMovementCommand(Shoulder shoulder , Elbow elbow , Wrist wrist , int position) {
     this.shoulder = shoulder;
-    this.elbow = elbow;
+    // this.elbow = elbow;
     this.wrist = wrist;
     this.position = position;
-    isFront = shoulder.getMeasurement() >= -90;
+    isFront = true;
     if(isFront){
       rPos = All_POSITIONS[position];
       prepSwitch = S_PREP_FOR_SWITCH_F;
@@ -78,23 +78,23 @@ public class ArmMovementCommand extends CommandBase {
       if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(rPos[2]);
       }
-      else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
+      /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
-      }
-      else if(Math.abs(rPos[0] - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance()){
-        shoulder.setSetpoint(rPos[0]);
+      }*/
+      else if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
+        shoulder.dumbShoulder(rPos[0]);
       }
       else{
         finished = true;
       }
     }
     else if(position <= 4){
-      if(Math.abs(rPos[0] - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance()){
-        shoulder.setSetpoint(rPos[0]);
+      if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
+        shoulder.dumbShoulder(rPos[0]);
       }
-      else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
+      /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
-      }
+      }*/
       else if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(rPos[2]);
       }
@@ -103,17 +103,17 @@ public class ArmMovementCommand extends CommandBase {
       }
     }
     else{
-      if(Math.abs(prepSwitch - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance()){
-        shoulder.setSetpoint(prepSwitch);
+      if(Math.abs(prepSwitch - shoulder.getMeasurement()) > 3){
+        shoulder.dumbShoulder(prepSwitch);
       }
       else if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(rPos[2]);
       }
-      else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
+      /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
-      }
-      else if(Math.abs(rPos[0] - shoulder.getMeasurement()) > shoulder.getController().getPositionTolerance()){
-        shoulder.setSetpoint(rPos[0]);
+      }*/
+      else if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
+        shoulder.dumbShoulder(rPos[0]);
       }
       else{
         finished = true;

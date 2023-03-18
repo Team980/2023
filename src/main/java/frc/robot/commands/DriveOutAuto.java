@@ -20,12 +20,13 @@ public class DriveOutAuto extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.resetEncoders();
+    drivetrain.resetYaw(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.driveRobot(.6, 0);
+    drivetrain.driveRobot(.6, drivetrain.getYPR()[0 / 30]); // TODO tune this :o
   }
 
   // Called once the command ends or is interrupted.
@@ -35,6 +36,6 @@ public class DriveOutAuto extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getRightDistance() < -5 || drivetrain.getLeftDistance() < -5;
+    return drivetrain.getRightDistance() < -7 || drivetrain.getLeftDistance() < -7;
   }
 }
