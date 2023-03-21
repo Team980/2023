@@ -12,6 +12,8 @@ public class DontMove extends CommandBase {
   /** Creates a new DontMove. */
   Drivetrain drivetrain;
   Shifter shifter;
+  double lPos;
+  double rPos;
 
   public DontMove(Drivetrain drivetrain, Shifter shifter) {
     this.drivetrain = drivetrain; 
@@ -22,15 +24,17 @@ public class DontMove extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.resetEncoders();
+    //drivetrain.resetEncoders();
+    lPos = drivetrain.getLeftDistance();
+    rPos = drivetrain.getRightDistance();
     shifter.setLowGear();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.setLeftDrive(-drivetrain.getLeftDistance());
-    drivetrain.setRightDrive(-drivetrain.getRightDistance());
+    drivetrain.setLeftDrive(-(drivetrain.getLeftDistance() - lPos));
+    drivetrain.setRightDrive(-(drivetrain.getRightDistance() - rPos));
   }
 
   // Called once the command ends or is interrupted.

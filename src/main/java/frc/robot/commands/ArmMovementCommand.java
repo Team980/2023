@@ -81,7 +81,7 @@ public class ArmMovementCommand extends CommandBase {
       /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
       }*/
-      if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
+      if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 5 ){
         if (rPos[0] > shoulder.getMeasurement())
           shoulder.runShoulder(.75);
         else
