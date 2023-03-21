@@ -180,6 +180,14 @@ public class Drivetrain extends SubsystemBase {
     return rightEncoder.getDistance();
   } 
 
+  public void setLeftDrive(double speed) {
+    leftDrive.set(speed);
+  }
+
+  public void setRightDrive(double speed) {
+    rightDrive.set(speed);
+  }
+
   public void resetEncoders(){
     leftEncoder.reset();
     rightEncoder.reset();

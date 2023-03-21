@@ -16,7 +16,7 @@ public class ArmMovementCommand extends CommandBase {
   private final double[] SCORE_HIGH_F = {0, 0, 0};
   private final double[] SCORE_MID_F = {0, 0, 0};
   private final double[] FLOOR_F = {-45, 0, 45};
-  private final double[] H_STATION_F = {0, 0, 0};
+  private final double[] H_STATION_F = {-15, 0, 0};
 
   private final double[] PARKED_POSITION_R = {-90 , 0 , 0};//TODO need parked numbers
   private final double[] SCORE_HIGH_R = {0, 0, 0};
@@ -75,14 +75,18 @@ public class ArmMovementCommand extends CommandBase {
   @Override
   public void execute() {
     if(position == 0){
-      if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
+      /*if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(rPos[2]);
-      }
+      }*/
       /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
       }*/
-      else if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
-        shoulder.dumbShoulder(rPos[0]);
+      if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
+        if (rPos[0] > shoulder.getMeasurement())
+          shoulder.runShoulder(.75);
+        else
+          shoulder.runShoulder(-.75);
+        wrist.setSetpoint(-shoulder.getMeasurement());
       }
       else{
         finished = true;
@@ -90,20 +94,24 @@ public class ArmMovementCommand extends CommandBase {
     }
     else if(position <= 4){
       if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
-        shoulder.dumbShoulder(rPos[0]);
+        if (rPos[0] > shoulder.getMeasurement())
+          shoulder.runShoulder(.75);
+        else
+          shoulder.runShoulder(-.75);
+         wrist.setSetpoint(-shoulder.getMeasurement());
       }
       /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
       }*/
-      else if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
+      /*else if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
         wrist.setSetpoint(rPos[2]);
-      }
+      }*/
       else{
         finished = true;
       }
     }
     else{
-      if(Math.abs(prepSwitch - shoulder.getMeasurement()) > 3){
+      /*if(Math.abs(prepSwitch - shoulder.getMeasurement()) > 3){
         shoulder.dumbShoulder(prepSwitch);
       }
       else if(Math.abs(rPos[2] - wrist.getMeasurement()) > wrist.getController().getPositionTolerance()){
@@ -111,13 +119,13 @@ public class ArmMovementCommand extends CommandBase {
       }
       /*else if(Math.abs(rPos[1] - elbow.getMeasurement()) > elbow.getController().getPositionTolerance()){
         elbow.setSetpoint(rPos[1]);
-      }*/
+      }
       else if(Math.abs(rPos[0] - shoulder.getMeasurement()) > 3){
         shoulder.dumbShoulder(rPos[0]);
       }
-      else{
+      else{*/
         finished = true;
-      }
+      //}
     }
   }
   // Called once the command ends or is interrupted.
@@ -127,6 +135,7 @@ public class ArmMovementCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    shoulder.runShoulder(0);
     return finished;
   }
 }

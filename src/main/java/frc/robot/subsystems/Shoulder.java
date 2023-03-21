@@ -35,10 +35,12 @@ public class Shoulder extends PIDSubsystem {
         shoulder.setNeutralMode(NeutralMode.Brake);
 
         shoulder.setInverted(false);
+        shoulder2.setInverted(false);
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
         //enable();
         //setSetpoint(-90);
+        //dumbShoulder(-90);
   }
 
   @Override
@@ -54,14 +56,14 @@ public class Shoulder extends PIDSubsystem {
   }
 
   public void runShoulder(double speed) {
-    if(!(sensors.getShoulderAngle() >= 0 && speed > 0)){
+    if(!(sensors.getShoulderAngle() >= 20 && speed > 0)){
       shoulder.set(speed);
       shoulder2.set(speed);
     }
 
   }
 
-  public void dumbShoulder(double angle) {
+  /*public void dumbShoulder(double angle) {
     double direction = Math.signum(angle - sensors.getShoulderAngle()); 
     if(direction > 0 && sensors.getShoulderAngle() < angle - 3) {
       runShoulder(.75);
@@ -72,7 +74,7 @@ public class Shoulder extends PIDSubsystem {
     else {
       runShoulder(0);
     }
-  }
+  }*/
 
   @Override
   public double getMeasurement() {
@@ -101,13 +103,13 @@ public class Shoulder extends PIDSubsystem {
     
 }
 
-  public void kindaManual(double move) {
+  /*public void kindaManual(double move) {
     if(Math.abs(move) > 0.2) {
       setSetpoint(0.5 * move + getSetpoint());
     }
-  }
+  }*/
 
   public CommandBase holdPosition(){
-    return this.runOnce(() -> setSetpoint(-90));
+    return this.runOnce(() -> runShoulder(0));
   }
 }

@@ -20,9 +20,9 @@ public class Wrist extends PIDSubsystem {
   /** Creates a new Wrist. */
   private ArmSensors sensors;
 
-  private final double KS = .05;
+  private final double KS = 0.1;
   private final double GEAR_RATIO = 100;
-  private final double POSITION_TOLERANCE = 5;
+  private final double POSITION_TOLERANCE = 1;
 
   private DoubleSolenoid wheelyGrab;
 
@@ -31,7 +31,7 @@ public class Wrist extends PIDSubsystem {
   public Wrist(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
-        new PIDController(12.0 / 180, 0, 0));
+        new PIDController(12.0 / 80, 0, 0));
 
         wrist = new WPI_TalonSRX(9); // 8
         
@@ -40,8 +40,8 @@ public class Wrist extends PIDSubsystem {
         wrist.setNeutralMode(NeutralMode.Brake);
         wrist.setInverted(true);
         wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 14);
-        //enable();
-        //setSetpoint(90);
+        enable();
+        setSetpoint(90);
   }
 
   public void runWrist(double speed) {
@@ -53,9 +53,9 @@ public class Wrist extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here 
-    if(sensors.getSCon() && sensors.getWCon()) {
+    //if(!sensors.getSCon() && !sensors.getWCon()) {
       wrist.setVoltage(output + customFFCalc(setpoint));
-    }
+    //}
 
       SmartDashboard.putNumber("W_PIDOut", output);
       SmartDashboard.putNumber("W_FF", customFFCalc(setpoint));
@@ -64,6 +64,7 @@ public class Wrist extends PIDSubsystem {
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
+    // setSetpoint(-sensors.getShoulderAngle());
     return sensors.getWristAngle();
   }
 

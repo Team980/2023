@@ -6,27 +6,31 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shifter;
 
-public class DriveOutAuto extends CommandBase {
+public class DontMove extends CommandBase {
+  /** Creates a new DontMove. */
   Drivetrain drivetrain;
-  /** Creates a new DriveOutAuto. */
-  public DriveOutAuto(Drivetrain drivetrain) {
-    this.drivetrain = drivetrain;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drivetrain);
+  Shifter shifter;
+
+  public DontMove(Drivetrain drivetrain, Shifter shifter) {
+    this.drivetrain = drivetrain; 
+    this.shifter = shifter;
+    addRequirements(drivetrain, shifter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     drivetrain.resetEncoders();
-    drivetrain.resetYaw(0);
+    shifter.setLowGear();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.driveRobot(.6, -drivetrain.getYPR()[0] / 45); // TODO tune this :o
+    drivetrain.setLeftDrive(-drivetrain.getLeftDistance());
+    drivetrain.setRightDrive(-drivetrain.getRightDistance());
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +40,6 @@ public class DriveOutAuto extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getRightDistance() < -7 || drivetrain.getLeftDistance() < -7;
+    return false;
   }
 }

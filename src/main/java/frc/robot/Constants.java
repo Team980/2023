@@ -25,7 +25,7 @@ public final class Constants {
   public static final double EL_SEGMENT_LENGTH = 22 / 12.0; //ft
   public static final double EL_CG_FROM_JOINT = 17 / 12.0; //ft
 
-  public static final double W_SEGMENT_MASS = 5.0; // 5.0lbs
+  public static final double W_SEGMENT_MASS = 5.0 + 2.5; // 5.0lbs
   public static final double W_SEGMENT_LENGTH = 15 / 12.0; // 15 / 12.0ft
   public static final double W_CG_FROM_JOINT = 5 / 12.0; // 5 / 12.0ft
 
