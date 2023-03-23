@@ -10,7 +10,7 @@ import frc.robot.subsystems.Drivetrain;
 public class TurnRobot extends CommandBase {
   private Drivetrain drivetrain;
   private double turnAmount;
-  private int pauseAmount;
+  //private int pauseAmount;
 
   /** Creates a new TurnRobot. */
   public TurnRobot(Drivetrain drivetrain, double turnAmount) {
@@ -31,22 +31,16 @@ public class TurnRobot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(drivetrain.getIMUHealth() == 0 && pauseAmount <= 0){
-      //drivetrain.driveRobot(0, drivetrain.getYPR()[0]/55);
+    //if(drivetrain.getIMUHealth() == 0 && pauseAmount <= 0){
+    if(drivetrain.getIMUHealth() == 0){
+        //drivetrain.driveRobot(0, drivetrain.getYPR()[0]/55);
       if(turnAmount > 0){
         drivetrain.driveRobot(0, 0.75);
       }
       else{
         drivetrain.driveRobot(0, -0.75);
       }
-      
-      
     }
-    /*else{
-      // drivetrain.stop();
-      pauseAmount--;
-    }*/
-    
   }
 
   // Called once the command ends or is interrupted.
@@ -56,7 +50,7 @@ public class TurnRobot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(drivetrain.getYPR()[0]) < 5) {
+    if(Math.abs(drivetrain.getYPR()[0]) < 3) {
         return true;
     }
     return false;

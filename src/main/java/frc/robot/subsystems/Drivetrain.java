@@ -112,14 +112,12 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
-  /*public CommandBase reverseFront(boolean reverse){
-    if(reverse){
-      return this.runOnce(() -> frontChanger = -1);
-    }
-    else {
-      return this.runOnce(() -> frontChanger = 1);
-    }
-  }*/
+  public void setFrontRio(){
+    frontChanger = 1;
+  }
+  public void setFrontTalon(){
+    frontChanger = -1;
+  }
 
   public void reverseFrontToggle(){
     frontChanger *= -1;
