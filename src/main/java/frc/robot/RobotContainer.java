@@ -55,15 +55,20 @@ public class RobotContainer {
 
     shifter.setDefaultCommand(shifter.setGear(true));
 
-     shoulder.setDefaultCommand(Commands.run(
-      () -> shoulder.runShoulder(-xbox.getLeftY()),
-      shoulder
-       ));
+    shoulder.setDefaultCommand(Commands.run(
+    () -> shoulder.runShoulder(-xbox.getLeftY()),
+    shoulder
+      ));
 
-    wrist.setDefaultCommand(Commands.run(
+    elbow.setDefaultCommand(Commands.run(
+    () -> elbow.runElbow(-xbox.getRightY()),
+    shoulder
+      ));
+
+    /*wrist.setDefaultCommand(Commands.run(
       () -> wrist.setSetpoint(-armSensors.getShoulderAngle() + 20),
       wrist
-       ));
+       ));*/
 
     // Configure the trigger bindings
     configureBindings();
@@ -79,23 +84,23 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
+    /*/xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
     xbox.a().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 1));//floor
     xbox.b().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 2));//mid
     xbox.y().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 3));//high
     xbox.x().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 0));//park
     xbox.povRight().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 4));//human station
-    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
+    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides*/
 
     xbox.rightBumper().onTrue(wrist.open(false));
     xbox.leftBumper().onTrue(wrist.open(true));
 
-    xbox.b().onTrue(Commands.run(
+    /*xbox.b().onTrue(Commands.run(
       () -> wrist.runWrist(-xbox.getRightY()),
       wrist
        ));
 
-    xbox.a().onTrue(Commands.runOnce(() -> wrist.setSetpoint(-armSensors.getShoulderAngle()), wrist));
+    xbox.a().onTrue(Commands.runOnce(() -> wrist.setSetpoint(-armSensors.getShoulderAngle()), wrist));*/
     prajBox.button(1).whileTrue(new DontMove(drivetrain, shifter));
   
     /*xbox.b().onTrue(Commands.runOnce(

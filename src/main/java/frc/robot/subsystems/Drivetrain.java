@@ -144,7 +144,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Left Top Amps", pdh.getCurrent(7));
     SmartDashboard.putNumber("Shoulder Amps", pdh.getCurrent(1));
     SmartDashboard.putNumber("Elbow Amps", pdh.getCurrent(9));
-    SmartDashboard.putNumber("Wrist Amps", pdh.getCurrent(8));
+    SmartDashboard.putNumber("Shoulder2 Amps", pdh.getCurrent(8));
 
     //debugging prints
     /*SmartDashboard.putNumber("leftPIDout", leftDrive.getPIDOutput());

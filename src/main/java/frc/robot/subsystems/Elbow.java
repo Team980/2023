@@ -29,16 +29,23 @@ public class Elbow extends PIDSubsystem {
         // The PIDController used by the subsystem
         new PIDController(12.0 / 180, 0, 0));
 
-        /*elbow = new WPI_TalonSRX(9);
+        elbow = new WPI_TalonSRX(9);
         elbow.setInverted(true);
         elbow.setNeutralMode(NeutralMode.Brake);
 
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
         disable();
-        setSetpoint(165); */
+        //setSetpoint(165);
 
   }
+
+  public void runElbow(double speed) {
+
+    elbow.set(speed);
+  }
+
+
 
   @Override
   public void useOutput(double output, double setpoint) {  /*

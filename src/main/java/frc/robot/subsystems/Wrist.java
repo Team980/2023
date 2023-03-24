@@ -33,7 +33,7 @@ public class Wrist extends PIDSubsystem {
         // The PIDController used by the subsystem
         new PIDController(12.0 / 80, 0, 0));
 
-        wrist = new WPI_TalonSRX(9); // 8
+        wrist = new WPI_TalonSRX(20); // 8 is now the other shoulder, this will need to be a new talon with a new ID
         
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
