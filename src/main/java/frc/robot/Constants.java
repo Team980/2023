@@ -14,16 +14,17 @@ package frc.robot;
  */
 public final class Constants {
   public static final double BAG_MOTOR_STALL_TORQUE = 3.5 / 12.0; //ft-lbs
+  public static final double SEVEN_MOTOR_STALL_TORQUE = 6.28/ 12.0; //ft-lbs
   public static final double DUAL_MOTOR_STALL_TORQUE = 6.28 * 2 / 12.0; //ft-lbs
+  public static final double MINCIM_MOTOR_STALL_TORQUE = 12.39 / 12.0; //ft-lbs
   
   public static final double SHO_SEGMENT_MASS = 5.4; //lbs
-  
   public static final double SHO_SEGMENT_LENGTH = 32 / 12.0; //ft
   public static final double SHO_CG_FROM_JOINT = 9 / 12.0; //ft
 
   public static final double EL_SEGMENT_MASS = 5.21; //lbs
-  public static final double EL_SEGMENT_LENGTH = 22 / 12.0; //ft
-  public static final double EL_CG_FROM_JOINT = 17 / 12.0; //ft
+  public static final double EL_SEGMENT_LENGTH = 16 / 12.0; //ft
+  public static final double EL_CG_FROM_JOINT = 12 / 12.0; //ft
 
   public static final double W_SEGMENT_MASS = 5.0 + 2.5; // 5.0lbs
   public static final double W_SEGMENT_LENGTH = 15 / 12.0; // 15 / 12.0ft

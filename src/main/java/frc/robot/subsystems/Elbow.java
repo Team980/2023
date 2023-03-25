@@ -19,8 +19,8 @@ public class Elbow extends PIDSubsystem {
   private ArmSensors sensors;
 
   private final double KS = .1;
-  private final double GEAR_RATIO = 100;
-  private final double POSITION_TOLERANCE = 5;
+  private final double GEAR_RATIO = 237;
+  private final double POSITION_TOLERANCE = 2;
 
   private WPI_TalonSRX elbow;
 
@@ -80,7 +80,7 @@ public class Elbow extends PIDSubsystem {
     double gElbow = (EL_SEGMENT_MASS * EL_CG_FROM_JOINT + W_SEGMENT_MASS * EL_SEGMENT_LENGTH) * cse + 
       csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
 
-    return KS * Math.signum(goalPosition - qe) + (12 * gElbow / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
+    return KS * Math.signum(goalPosition - qe) + (12 * gElbow / (SEVEN_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
   }
 
   public void kindaManualE(double moveF , double moveR) {

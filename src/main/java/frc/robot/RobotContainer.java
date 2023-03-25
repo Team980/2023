@@ -84,13 +84,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    /*/xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
+    xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
     xbox.a().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 1));//floor
     xbox.b().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 2));//mid
     xbox.y().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 3));//high
     xbox.x().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 0));//park
     xbox.povRight().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 4));//human station
-    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides*/
+    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
 
     xbox.rightBumper().onTrue(wrist.open(false));
     xbox.leftBumper().onTrue(wrist.open(true));

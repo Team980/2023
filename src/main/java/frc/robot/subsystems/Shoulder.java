@@ -27,7 +27,7 @@ public class Shoulder extends PIDSubsystem {
   public Shoulder(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
-        new PIDController(1.0 / 45, 0, 0));
+        new PIDController(12.0 / 45, 0, 0));
 
 
         shoulder = new WPI_TalonSRX(11);
@@ -48,8 +48,8 @@ public class Shoulder extends PIDSubsystem {
     // Use the output here
 
     // if(sensors.getSCon() && sensors.getWCon()){
-      shoulder.set(output);
-      shoulder2.set(output);
+      shoulder.setVoltage(output);
+      shoulder2.setVoltage(output);
   //}
 
     SmartDashboard.putNumber("S_PIDOut", output);
