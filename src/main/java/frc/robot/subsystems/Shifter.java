@@ -18,20 +18,21 @@ public class Shifter extends SubsystemBase {
   public Shifter(Drivetrain drivetrain) {
     shifter = new Solenoid(PneumaticsModuleType.REVPH, 13);
     this.drivetrain = drivetrain;
+    shifter.set(false);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public void autoShift(){
+  /*public void autoShift(){
     if(isLowGear()&&(Math.abs(drivetrain.getLeftSpeed()) > SHIFT_POINT_HIGH || Math.abs(drivetrain.getRightSpeed()) > SHIFT_POINT_HIGH )){
       shifter.set(false);
     }//shift to high
     else if(!isLowGear()&&(Math.abs(drivetrain.getLeftSpeed()) < SHIFT_POINT_LOW && Math.abs(drivetrain.getRightSpeed()) < SHIFT_POINT_LOW )){
       shifter.set(true);
     }//shift to low
-  }
+  }*/
 
   public boolean isLowGear(){
     return shifter.get();
@@ -39,15 +40,15 @@ public class Shifter extends SubsystemBase {
 
   public void setLowGear(){
     drivetrain.shiftGear(true);
-    shifter.set(false);
+    shifter.set(true);
   }
 
   public void setHighGear(){
     drivetrain.shiftGear(false);
-    shifter.set(true);
+    shifter.set(false);
   }
 
-  public CommandBase setGear(boolean low){
+  /*public CommandBase setGear(boolean low){
     if(low){
       drivetrain.shiftGear(true);
       return this.run(() -> shifter.set(false));
@@ -56,5 +57,5 @@ public class Shifter extends SubsystemBase {
       drivetrain.shiftGear(false);
       return this.run(() -> shifter.set(true));
     }
-  }
+  }*/
 }

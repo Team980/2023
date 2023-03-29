@@ -19,11 +19,14 @@ public class Shoulder extends PIDSubsystem {
   private ArmSensors sensors;
 
   private final double KS = .2;
-  private final double GEAR_RATIO = 600;
-  private final double POSITION_TOLERANCE = 5;
+  private final double GEAR_RATIO = 420; // 600
+  private final double POSITION_TOLERANCE = 2; // 5
 
   private WPI_TalonSRX shoulder;
   private WPI_TalonSRX shoulder2;
+
+  private double currentPosition; 
+
   public Shoulder(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
@@ -37,10 +40,10 @@ public class Shoulder extends PIDSubsystem {
         shoulder.setInverted(false);
         shoulder2.setInverted(false);
         this.sensors = sensors;
+        currentPosition = getMeasurement();
         super.getController().setTolerance(POSITION_TOLERANCE);
         //enable();
-        //setSetpoint(-90);
-        //dumbShoulder(-90);
+        //setSetpoint(currentPosition);
   }
 
   @Override
@@ -48,33 +51,29 @@ public class Shoulder extends PIDSubsystem {
     // Use the output here
 
     // if(sensors.getSCon() && sensors.getWCon()){
-      shoulder.setVoltage(output);
-      shoulder2.setVoltage(output);
+      shoulder.setVoltage(output + customFFCalc(setpoint));
+      shoulder2.setVoltage(output + customFFCalc(setpoint));
   //}
 
     SmartDashboard.putNumber("S_PIDOut", output);
   }
 
   public void runShoulder(double speed) {
-    if(!(sensors.getShoulderAngle() >= 20 && speed > 0)){
-      shoulder.set(speed);
-      shoulder2.set(speed);
+    if(Math.abs(speed) > 0.1){
+      if(!(sensors.getShoulderAngle() >= 20 && speed > 0)){
+        disable();
+        shoulder.set(speed);
+        shoulder2.set(speed);
+        currentPosition = getMeasurement();
+      }
     }
-
+    else{
+    //  enable();
+    //  setSetpoint(currentPosition);
+    shoulder.stopMotor();
+    shoulder2.stopMotor();
+    }
   }
-
-  /*public void dumbShoulder(double angle) {
-    double direction = Math.signum(angle - sensors.getShoulderAngle()); 
-    if(direction > 0 && sensors.getShoulderAngle() < angle - 3) {
-      runShoulder(.75);
-    }
-    else if(direction < 0 && sensors.getShoulderAngle() > angle + 3){
-      runShoulder(-.75);
-    }
-    else {
-      runShoulder(0);
-    }
-  }*/
 
   @Override
   public double getMeasurement() {
@@ -84,20 +83,20 @@ public class Shoulder extends PIDSubsystem {
 
   public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
     double qs = getMeasurement();
-    // double qe = sensors.getElbowAngle();
+    double qe = sensors.getElbowAngle();
     double qw = sensors.getWristAngle();
 
     double cs = Math.cos(Math.toRadians(qs));
-    // double cse = Math.cos(Math.toRadians(qs + qe));
-    // double csew = Math.cos(Math.toRadians(qs + qe + qw));
-    double csew = Math.cos(Math.toRadians(qs + qw));
+     double cse = Math.cos(Math.toRadians(qs + qe));
+     double csew = Math.cos(Math.toRadians(qs + qe + qw));
+    // double csew = Math.cos(Math.toRadians(qs + qw));
 
-    /*double gShoulder = cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + EL_SEGMENT_MASS * SHO_SEGMENT_LENGTH + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
+    double gShoulder = cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + EL_SEGMENT_MASS * SHO_SEGMENT_LENGTH + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
       cse * (EL_SEGMENT_MASS * EL_CG_FROM_JOINT + W_SEGMENT_MASS * EL_SEGMENT_LENGTH) + 
-      csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;*/
+      csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
 
-    double gShoulder = cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
-    csew * W_SEGMENT_MASS * W_CG_FROM_JOINT;
+    /*double gShoulder = cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
+    csew * W_SEGMENT_MASS * W_CG_FROM_JOINT; */
 
     return KS * Math.signum(goalPosition - qs) + (12 * gShoulder / (DUAL_MOTOR_STALL_TORQUE * GEAR_RATIO)); //12 change to voltage--/* */
     

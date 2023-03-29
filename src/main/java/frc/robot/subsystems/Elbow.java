@@ -22,6 +22,8 @@ public class Elbow extends PIDSubsystem {
   private final double GEAR_RATIO = 237;
   private final double POSITION_TOLERANCE = 2;
 
+  private double currentPosition;
+
   private WPI_TalonSRX elbow;
 
   public Elbow(ArmSensors sensors) {
@@ -34,42 +36,42 @@ public class Elbow extends PIDSubsystem {
         elbow.setNeutralMode(NeutralMode.Brake);
 
         this.sensors = sensors;
+        currentPosition = getMeasurement();
         super.getController().setTolerance(POSITION_TOLERANCE);
-        disable();
-        //setSetpoint(165);
+       // enable();
+        //setSetpoint(currentPosition);//147
+  }
 
+  @Override
+  public void useOutput(double output, double setpoint) {  
+    // Use the output here
+
+    // if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
+      elbow.setVoltage(output + customFFCalc(setpoint)); 
   }
 
   public void runElbow(double speed) {
-
-    elbow.set(speed);
+    //if(Math.abs(speed) > 0.1){
+      if(!((sensors.getElbowAngle() >= 148 && speed > 0) || (sensors.getElbowAngle() <= -132 && speed < 0))){
+        disable();
+        elbow.set(speed);
+        currentPosition = getMeasurement();
+      }
+    //}
+    //else{
+      //enable();
+      //setSetpoint(currentPosition);
+    //}
   }
-
-
-
-  @Override
-  public void useOutput(double output, double setpoint) {  /*
-    // Use the output here
-    SmartDashboard.putNumber("E_PIDOut", output);
-    SmartDashboard.putNumber("E_FF", customFFCalc(setpoint));
-
-    if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
-      elbow.setVoltage(output + customFFCalc(setpoint)); */
-  }
-
-  /*public void runElbow(double speed) {
-    elbow.set(speed);
-  }*/
 
   @Override
   public double getMeasurement() {
 
     // Return the process variable measurement here
-    // return sensors.getElbowAngle();
-    return 0;
+    return sensors.getElbowAngle();
   }
 
-  /* public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
+  public double customFFCalc(double goalPosition) { //direction is either 1 or -1 depending on the sensor
     double qs = sensors.getShoulderAngle();
     double qe = sensors.getElbowAngle();
     double qw = sensors.getWristAngle();
@@ -94,6 +96,6 @@ public class Elbow extends PIDSubsystem {
 
   public CommandBase holdPosition(){
     return this.runOnce(() -> setSetpoint(getMeasurement()));
-  } */
+  }
 
 }

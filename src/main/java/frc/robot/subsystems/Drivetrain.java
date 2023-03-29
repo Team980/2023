@@ -33,7 +33,7 @@ public class Drivetrain extends SubsystemBase {
   private double KS_LOW_LEFT = 0.05; //3.25  TODO
   private double KS_HIGH_LEFT = 1.0; //3.5  TODO
 
-  private double KP_LOW = 2.1;
+  private double KP_LOW = 1.125; // 2.1 // 1.2
   private double KP_HIGH = 0.5;
 
   private PIDMotorGroup leftDrive;
@@ -88,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
     robotDrive = new DifferentialDrive(leftDrive, rightDrive);
 
     this.pdh = pdh;//This needs to be CAN ID 1
-    frontChanger = -1;
+    frontChanger = 1;
 
   }
 

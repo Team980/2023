@@ -27,7 +27,7 @@ public class DontMove extends CommandBase {
     //drivetrain.resetEncoders();
     lPos = drivetrain.getLeftDistance();
     rPos = drivetrain.getRightDistance();
-    shifter.setLowGear();
+    //.shifter.setLowGear();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

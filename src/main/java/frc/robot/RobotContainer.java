@@ -53,7 +53,7 @@ public class RobotContainer {
       drivetrain
       )); 
 
-    shifter.setDefaultCommand(shifter.setGear(true));
+    // shifter.setDefaultCommand(shifter.setGear(true));
 
     shoulder.setDefaultCommand(Commands.run(
     () -> shoulder.runShoulder(-xbox.getLeftY()),
@@ -62,13 +62,10 @@ public class RobotContainer {
 
     elbow.setDefaultCommand(Commands.run(
     () -> elbow.runElbow(-xbox.getRightY()),
-    shoulder
+    elbow
       ));
 
-    /*wrist.setDefaultCommand(Commands.run(
-      () -> wrist.setSetpoint(-armSensors.getShoulderAngle() + 20),
-      wrist
-       ));*/
+    wrist.setDefaultCommand(wrist.horizAuto());
 
     // Configure the trigger bindings
     configureBindings();
@@ -90,7 +87,7 @@ public class RobotContainer {
     xbox.y().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 3));//high
     xbox.x().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 0));//park
     xbox.povRight().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 4));//human station
-    xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
+    //xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
 
     xbox.rightBumper().onTrue(wrist.open(false));
     xbox.leftBumper().onTrue(wrist.open(true));
@@ -116,8 +113,11 @@ public class RobotContainer {
     elbow
   ));*/
 
-  throttle.button(3).onTrue(shifter.setGear(false));
-  throttle.button(4).onTrue(shifter.setGear(true));
+  /*throttle.button(3).onTrue(shifter.setGear(false));
+  throttle.button(4).onTrue(shifter.setGear(true));*/
+  throttle.button(4).onTrue(Commands.runOnce(shifter::setHighGear, shifter));
+  throttle.button(3).onTrue(Commands.runOnce(shifter::setLowGear, shifter));
+
   //prajBox.button(0).onTrue(drivetrain.reverseFront(true)).onFalse(drivetrain.reverseFront(false));
   throttle.povUp().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
   throttle.povUpLeft().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));

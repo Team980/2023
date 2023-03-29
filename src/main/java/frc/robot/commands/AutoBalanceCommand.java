@@ -30,7 +30,7 @@ public class AutoBalanceCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shifter.setLowGear();
+    //shifter.setLowGear();
     drivetrain.resetYaw(0);
     drivetrain.setFrontRio();
   }

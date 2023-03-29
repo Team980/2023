@@ -33,22 +33,20 @@ public class Wrist extends PIDSubsystem {
         // The PIDController used by the subsystem
         new PIDController(12.0 / 80, 0, 0));
 
-        wrist = new WPI_TalonSRX(20); // 8 is now the other shoulder, this will need to be a new talon with a new ID
+        wrist = new WPI_TalonSRX(10); // 8 is now the other shoulder, this will need to be a new talon with a new ID
         
         this.sensors = sensors;
         super.getController().setTolerance(POSITION_TOLERANCE);
         wrist.setNeutralMode(NeutralMode.Brake);
-        wrist.setInverted(true);
+        wrist.setInverted(false);
         wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 14);
         enable();
-        setSetpoint(90);
+        // setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle())); // 90
   }
 
   public void runWrist(double speed) {
-
     wrist.set(speed);
   }
-
 
   @Override
   public void useOutput(double output, double setpoint) {
@@ -100,12 +98,14 @@ public class Wrist extends PIDSubsystem {
   }
 
   public CommandBase horizAuto(){
-    if(sensors.getElbowAngle() >= -90){
+    /*if(sensors.getElbowAngle() >= -90){
       return this.runOnce(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle())));
     }
     else{
       return this.runOnce(() -> setSetpoint(-180 - (sensors.getShoulderAngle() + sensors.getElbowAngle())));
 
-    }
+    }*/
+
+    return this.runOnce(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle())));
   }
 }

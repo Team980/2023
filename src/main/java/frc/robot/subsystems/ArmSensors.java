@@ -21,7 +21,7 @@ public class ArmSensors extends SubsystemBase {
   public ArmSensors() {
     shoulder = new DutyCycleEncoder(4); // 4
     elbow = new DutyCycleEncoder(5); // 5
-    wrist = new DutyCycleEncoder(5); // 6
+    wrist = new DutyCycleEncoder(6); // 6
   }
 
   @Override
@@ -40,15 +40,15 @@ public class ArmSensors extends SubsystemBase {
 
   //all need offsets for 90 parallel to ground when straight out
   public double getShoulderAngle(){
-    return shoulder.getAbsolutePosition() * 360 - 221.5;
+    return shoulder.getAbsolutePosition() * 360 - 288.5; // 221.5 
   }
 
   public double getElbowAngle(){
-    return elbow.getAbsolutePosition() * 360 - 183.6;
+    return elbow.getAbsolutePosition() * 360 - 183.6; // 183.6
   }
 
   public double getWristAngle(){
-    return wrist.getAbsolutePosition() * 360 - 143;
+    return (wrist.getAbsolutePosition() * 360 - 177.5) * -1; // 143
   }
 
   public boolean getSCon(){

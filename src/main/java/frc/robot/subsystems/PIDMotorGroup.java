@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
 public class PIDMotorGroup extends PIDSubsystem implements MotorController{
@@ -50,6 +51,8 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
           this.manualOverride = false;
           this.SPEED_LIMIT_LOW = SPEED_LIMIT_LOW;
           this.SPEED_LIMIT_HIGH = SPEED_LIMIT_HIGH;
+          SmartDashboard.putNumber("runL", -1);
+
           enable();
 
           ffLow = new SimpleMotorFeedforward(ksLow, 12.0/maxVelocityLow);
@@ -73,6 +76,8 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
       outputVoltage = output + ffHigh.calculate(setpoint);
       motors.setVoltage(outputVoltage);
     }
+
+    SmartDashboard.putNumber("vDrive", setpoint);
   }
 
   @Override
@@ -88,9 +93,11 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
     } 
     else if(inLowGear) {
       setSetpoint(speed * SPEED_LIMIT_LOW);
+      SmartDashboard.putNumber("gear?", 0);
     }
     else {
       setSetpoint(speed * SPEED_LIMIT_HIGH);
+      SmartDashboard.putNumber("gear?", 1);
     }
   }
 
@@ -124,9 +131,11 @@ public class PIDMotorGroup extends PIDSubsystem implements MotorController{
 
     if(inLowGear) {
       super.getController().setP(kpLow);
+      SmartDashboard.putNumber("runL", 0);
     }
     else {
       super.getController().setP(kpHigh);
+      SmartDashboard.putNumber("runL", 1);
     }
   }
   
