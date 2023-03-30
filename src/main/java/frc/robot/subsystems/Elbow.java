@@ -32,7 +32,7 @@ public class Elbow extends PIDSubsystem {
         new PIDController(12.0 / 180, 0, 0));
 
         elbow = new WPI_TalonSRX(9);
-        elbow.setInverted(true);
+        elbow.setInverted(false);
         elbow.setNeutralMode(NeutralMode.Brake);
 
         this.sensors = sensors;
@@ -52,16 +52,30 @@ public class Elbow extends PIDSubsystem {
 
   public void runElbow(double speed) {
     //if(Math.abs(speed) > 0.1){
-      if(!((sensors.getElbowAngle() >= 148 && speed > 0) || (sensors.getElbowAngle() <= -132 && speed < 0))){
-        disable();
-        elbow.set(speed);
-        currentPosition = getMeasurement();
+      /*if((sensors.getElbowAngle() >= 140 && speed > 0)) {
+        //disable();
+        elbow.stopMotor();
       }
+      else {*/
+      if(speed >= .2){
+        elbow.set(1);
+      }
+      else if(speed <= -0.2){
+        elbow.set(-0.6);
+      }
+      else {
+        elbow.stopMotor();
+      }
+        //elbow.set(speed);
+        //currentPosition = getMeasurement();
+      //}
     //}
     //else{
       //enable();
       //setSetpoint(currentPosition);
     //}
+
+
   }
 
   @Override

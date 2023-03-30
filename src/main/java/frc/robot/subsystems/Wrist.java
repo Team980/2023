@@ -41,6 +41,7 @@ public class Wrist extends PIDSubsystem {
         wrist.setInverted(false);
         wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 14);
         enable();
+        setSetpoint(90);
         // setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle())); // 90
   }
 
@@ -106,6 +107,10 @@ public class Wrist extends PIDSubsystem {
 
     }*/
 
-    return this.runOnce(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle())));
+    return this.runOnce(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle()) + 20));
+  }
+
+  public void parkWrist() {
+    setSetpoint(90);
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.ArmCommand2;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DontMove;
@@ -82,15 +83,18 @@ public class RobotContainer {
    */
   private void configureBindings() {
     xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
-    xbox.a().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 1));//floor
-    xbox.b().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 2));//mid
-    xbox.y().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 3));//high
-    xbox.x().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 0));//park
-    xbox.povRight().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 4));//human station
+    xbox.a().onTrue(new ArmCommand2(shoulder , elbow , 1));//floor
+    xbox.b().onTrue(new ArmCommand2(shoulder , elbow , 2));//mid
+    xbox.y().onTrue(new ArmCommand2(shoulder , elbow , 3));//high
+    xbox.x().onTrue(new ArmCommand2(shoulder , elbow , 0));//park
+    xbox.povRight().onTrue(new ArmCommand2(shoulder , elbow , 4));//human station
     //xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
 
-    xbox.rightBumper().onTrue(wrist.open(false));
-    xbox.leftBumper().onTrue(wrist.open(true));
+    xbox.rightBumper().onTrue(wrist.open(true));
+    xbox.leftBumper().onTrue(wrist.open(false));
+
+    xbox.povLeft().onTrue(Commands.run(wrist::parkWrist, wrist));
+    xbox.povRight().onTrue(wrist.horizAuto());
 
     /*xbox.b().onTrue(Commands.run(
       () -> wrist.runWrist(-xbox.getRightY()),
