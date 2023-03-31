@@ -6,10 +6,14 @@ package frc.robot;
 
 import frc.robot.commands.ArmCommand2;
 import frc.robot.commands.ArmMovementCommand;
+import frc.robot.commands.AutoDriveCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DontMove;
 import frc.robot.commands.DriveOutAuto;
+import frc.robot.commands.FoldUp;
 import frc.robot.commands.ScoreAuto;
+import frc.robot.commands.ScoreAutoHigh;
+import frc.robot.commands.ScoreAutoLow;
 import frc.robot.commands.ScoreAutoMid;
 import frc.robot.subsystems.ArmSensors;
 import frc.robot.subsystems.Drivetrain;
@@ -97,16 +101,19 @@ public class RobotContainer {
     xbox.rightBumper().onTrue(Commands.runOnce(wrist::openManual, wrist));
     xbox.leftBumper().onTrue(Commands.runOnce(wrist::closeManual, wrist));
 
-    xbox.x().onTrue(Commands.run(wrist::parkWrist, wrist));
-    xbox.a().onTrue(Commands.run(wrist::floorGrab, wrist));
-    xbox.b().onTrue(wrist.horizAuto());
+    //xbox.x().onTrue(Commands.run(wrist::parkWrist, wrist));
+    //xbox.a().onTrue(Commands.run(wrist::floorGrab, wrist));
+    xbox.start().onTrue(wrist.horizAuto());
 
-    xbox.y().onTrue(new ScoreAutoMid(shoulder, elbow, wrist, armSensors));
+    xbox.y().onTrue(new ScoreAutoHigh(shoulder, elbow, wrist, armSensors));
+    xbox.b().onTrue(new ScoreAutoMid(shoulder, elbow, wrist, armSensors));
+    xbox.a().onTrue(new ScoreAutoLow(shoulder, elbow, wrist, armSensors));
+    xbox.x().onTrue(new FoldUp(shoulder, elbow, wrist, armSensors));
 
-    /*xbox.y().onTrue(Commands.run(
+    xbox.back().onTrue(Commands.run(
       () -> wrist.runWrist(-xbox.getRightY()),
       wrist
-       ));*/
+       ));
 
     //xbox.a().onTrue(Commands.runOnce(() -> wrist.setSetpoint(-armSensors.getShoulderAngle()), wrist));
     prajBox.button(1).whileTrue(new DontMove(drivetrain, shifter));
@@ -160,8 +167,8 @@ public class RobotContainer {
     // An example command will be run in autonomous
     //return Autos.exampleAuto(m_exampleSubsystem);
     //return new DriveOutAuto(drivetrain);
-    return new ScoreAuto(shoulder, elbow, wrist, armSensors);
+    //return new ScoreAuto(shoulder, elbow, wrist, armSensors);
 
-    //return new SequentialCommandGroup(ScoreAuto)
+    return new SequentialCommandGroup(new ScoreAuto(shoulder, elbow, wrist, armSensors) , new AutoDriveCommand(drivetrain, -10, -.60));
   }
 }
