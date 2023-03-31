@@ -14,7 +14,7 @@ public class Targeting extends SubsystemBase {
   private final double HEIGHT_OF_TARGET = 2.3; //in feet
   private final double HEIGHT_OF_H_STATION = 3.3; //in feet
   private final double HEIGHT_OF_CAMERA = 37.5 / 12;//TODO get real measurements
-  private final double MOUNT_ANGLE = 33.1; //TODO get real measurements
+  private final double MOUNT_ANGLE = 20; //TODO get real measurements
   private final double DIST_CAM_TO_BUMPER = 1.5;//in feet TODO need actual measurement
   private final double HIGH_SCORE_ARM_LENGTH = 3.73;//in feet from edge of bumper TODO need actual length
   private final double MID_SCORE_ARM_LENGTH = 2.5;//in feet from edge of bumper TODO need actual length
@@ -51,6 +51,10 @@ public class Targeting extends SubsystemBase {
     limelight.getEntry("ledMode").setNumber(1);
     limelight.getEntry("camMode").setNumber(0);
     limelight.getEntry("pipeline").setNumber(0);
+  }
+
+  public void changeTag(int tag){//1 rl, 2 rc, 3 rr, 5 br, 6 bl, 7 bc
+    limelight.getEntry("pipeline").setNumber(tag);
   }
 
   @Override

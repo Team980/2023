@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -27,7 +28,9 @@ public class Shoulder extends PIDSubsystem {
 
   private double currentPosition; 
 
-  public Shoulder(ArmSensors sensors) {
+  private PowerDistribution pdh;
+
+  public Shoulder(ArmSensors sensors, PowerDistribution pdh) {
     super(
         // The PIDController used by the subsystem
         new PIDController(12.0 / 45, 0, 0));
@@ -40,6 +43,7 @@ public class Shoulder extends PIDSubsystem {
         shoulder.setInverted(false);
         shoulder2.setInverted(false);
         this.sensors = sensors;
+        this.pdh = pdh;
         currentPosition = getMeasurement();
         super.getController().setTolerance(POSITION_TOLERANCE);
         //enable();
@@ -49,17 +53,18 @@ public class Shoulder extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-
+    shoulder.set(Math.signum(output) * .5);
+    shoulder2.set(Math.signum(output) * .5);
     // if(sensors.getSCon() && sensors.getWCon()){
-      shoulder.setVoltage(output + customFFCalc(setpoint));
-      shoulder2.setVoltage(output + customFFCalc(setpoint));
+      //shoulder.setVoltage(output + customFFCalc(setpoint));
+      //shoulder2.setVoltage(output + customFFCalc(setpoint));
   //}
 
     SmartDashboard.putNumber("S_PIDOut", output);
   }
 
   public void runShoulder(double speed) {
-    if(Math.abs(speed) > 0.1){
+    if(Math.abs(speed) > 0.1 && pdh.getCurrent(1) < 6 && pdh.getCurrent(8) < 6){
       if(!(sensors.getShoulderAngle() >= 20 && speed > 0)){
         disable();
         shoulder.set(speed);

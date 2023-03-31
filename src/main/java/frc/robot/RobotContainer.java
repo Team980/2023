@@ -9,16 +9,20 @@ import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DontMove;
 import frc.robot.commands.DriveOutAuto;
+import frc.robot.commands.ScoreAuto;
+import frc.robot.commands.ScoreAutoMid;
 import frc.robot.subsystems.ArmSensors;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shifter;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.Targeting;
 import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -35,7 +39,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(pdh);
   private final Shifter shifter  = new Shifter (drivetrain);
   private final ArmSensors armSensors = new ArmSensors();
-  private final Shoulder shoulder = new Shoulder(armSensors);
+  private final Shoulder shoulder = new Shoulder(armSensors, pdh);
   private final Wrist wrist = new Wrist(armSensors);
   private final Elbow elbow = new Elbow(armSensors);
 
@@ -62,11 +66,11 @@ public class RobotContainer {
       ));
 
     elbow.setDefaultCommand(Commands.run(
-    () -> elbow.runElbow(-xbox.getRightY()),
+    () -> elbow.runElbow(xbox.getRightY()),
     elbow
       ));
 
-    wrist.setDefaultCommand(wrist.horizAuto());
+    // wrist.setDefaultCommand(wrist.horizAuto());
 
     // Configure the trigger bindings
     configureBindings();
@@ -82,26 +86,29 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
+    /*xbox.back().onTrue(Commands.parallel(shoulder.holdPosition() , wrist.holdPosition()));//will stop the arm and clear running commands
     xbox.a().onTrue(new ArmCommand2(shoulder , elbow , 1));//floor
     xbox.b().onTrue(new ArmCommand2(shoulder , elbow , 2));//mid
     xbox.y().onTrue(new ArmCommand2(shoulder , elbow , 3));//high
     xbox.x().onTrue(new ArmCommand2(shoulder , elbow , 0));//park
-    xbox.povRight().onTrue(new ArmCommand2(shoulder , elbow , 4));//human station
+    xbox.povRight().onTrue(new ArmCommand2(shoulder , elbow , 4));*/ //human station
     //xbox.start().onTrue(new ArmMovementCommand(shoulder , elbow , wrist , 5));//switch sides
 
-    xbox.rightBumper().onTrue(wrist.open(true));
-    xbox.leftBumper().onTrue(wrist.open(false));
+    xbox.rightBumper().onTrue(Commands.runOnce(wrist::openManual, wrist));
+    xbox.leftBumper().onTrue(Commands.runOnce(wrist::closeManual, wrist));
 
-    xbox.povLeft().onTrue(Commands.run(wrist::parkWrist, wrist));
-    xbox.povRight().onTrue(wrist.horizAuto());
+    xbox.x().onTrue(Commands.run(wrist::parkWrist, wrist));
+    xbox.a().onTrue(Commands.run(wrist::floorGrab, wrist));
+    xbox.b().onTrue(wrist.horizAuto());
 
-    /*xbox.b().onTrue(Commands.run(
+    xbox.y().onTrue(new ScoreAutoMid(shoulder, elbow, wrist, armSensors));
+
+    /*xbox.y().onTrue(Commands.run(
       () -> wrist.runWrist(-xbox.getRightY()),
       wrist
-       ));
+       ));*/
 
-    xbox.a().onTrue(Commands.runOnce(() -> wrist.setSetpoint(-armSensors.getShoulderAngle()), wrist));*/
+    //xbox.a().onTrue(Commands.runOnce(() -> wrist.setSetpoint(-armSensors.getShoulderAngle()), wrist));
     prajBox.button(1).whileTrue(new DontMove(drivetrain, shifter));
   
     /*xbox.b().onTrue(Commands.runOnce(
@@ -123,11 +130,11 @@ public class RobotContainer {
   throttle.button(3).onTrue(Commands.runOnce(shifter::setLowGear, shifter));
 
   //prajBox.button(0).onTrue(drivetrain.reverseFront(true)).onFalse(drivetrain.reverseFront(false));
-  throttle.povUp().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
+  /*throttle.povUp().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
   throttle.povUpLeft().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
   throttle.povUpRight().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
   throttle.povLeft().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
-  throttle.povRight().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));
+  throttle.povRight().onTrue(Commands.runOnce(drivetrain::reverseFrontToggle, drivetrain));*/
 
   
 
@@ -152,6 +159,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return Autos.exampleAuto(m_exampleSubsystem);
-    return new DriveOutAuto(drivetrain);
+    //return new DriveOutAuto(drivetrain);
+    return new ScoreAuto(shoulder, elbow, wrist, armSensors);
+
+    //return new SequentialCommandGroup(ScoreAuto)
   }
 }

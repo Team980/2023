@@ -31,7 +31,7 @@ public class Wrist extends PIDSubsystem {
   public Wrist(ArmSensors sensors) {
     super(
         // The PIDController used by the subsystem
-        new PIDController(12.0 / 80, 0, 0));
+        new PIDController(12.0 / 120, 0, 0));
 
         wrist = new WPI_TalonSRX(10); // 8 is now the other shoulder, this will need to be a new talon with a new ID
         
@@ -52,7 +52,7 @@ public class Wrist extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here 
-    //if(!sensors.getSCon() && !sensors.getWCon()) {
+    //if(Math.abs(output + customFFCalc(setpoint)) < 8) {
       wrist.setVoltage(output + customFFCalc(setpoint));
     //}
 
@@ -89,14 +89,14 @@ public class Wrist extends PIDSubsystem {
     return this.runOnce(() -> setSetpoint(90));
   }
 
-  public CommandBase open(boolean openGrab) {
+  /*public CommandBase open(boolean openGrab) {
     if(openGrab) {
       return this.runOnce(() -> wheelyGrab.set(Value.kForward));
     }
     else {
       return this.runOnce(() -> wheelyGrab.set(Value.kReverse));
     }
-  }
+  }*/
 
   public CommandBase horizAuto(){
     /*if(sensors.getElbowAngle() >= -90){
@@ -107,10 +107,22 @@ public class Wrist extends PIDSubsystem {
 
     }*/
 
-    return this.runOnce(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle()) + 20));
+    return this.run(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle()) + 20));
   }
 
   public void parkWrist() {
     setSetpoint(90);
+  }
+
+  public void floorGrab() {
+    setSetpoint(40);
+  }
+
+  public void openManual(){
+    wheelyGrab.set(Value.kForward);
+  }
+
+  public void closeManual(){
+    wheelyGrab.set(Value.kReverse);
   }
 }

@@ -45,9 +45,9 @@ public class Elbow extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {  
     // Use the output here
-
+    elbow.set(Math.signum(output) * .5);
     // if(sensors.getSCon() || sensors.getECon() || sensors.getWCon())
-      elbow.setVoltage(output + customFFCalc(setpoint)); 
+      //elbow.setVoltage(output + customFFCalc(setpoint)); 
   }
 
   public void runElbow(double speed) {
@@ -57,16 +57,8 @@ public class Elbow extends PIDSubsystem {
         elbow.stopMotor();
       }
       else {*/
-      if(speed >= .2){
-        elbow.set(1);
-      }
-      else if(speed <= -0.2){
-        elbow.set(-0.6);
-      }
-      else {
-        elbow.stopMotor();
-      }
-        //elbow.set(speed);
+      
+        elbow.set(speed);
         //currentPosition = getMeasurement();
       //}
     //}

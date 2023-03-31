@@ -26,7 +26,7 @@ public class DriveOutAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.driveRobot(.6, -drivetrain.getYPR()[0] / 45); // TODO tune this :o
+    drivetrain.driveRobot(-0.6, -drivetrain.getYPR()[0] / 45); // TODO tune this :o
   }
 
   // Called once the command ends or is interrupted.
