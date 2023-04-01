@@ -41,18 +41,19 @@ public class ScoreAutoMid extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    wrist.horizAuto();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() { // -41, 123 
+  public void execute() { // -41, 123  --  2 ft 2 in
     if(sensors.getShoulderAngle() < -41){
       shoulder.runShoulder(0.5);
     }
     else{
       shoulder.runShoulder(0);
       finSho = true;
+      wrist.setSetpoint(-65);
       if(sensors.getElbowAngle() > 123){
         elbow.runElbow(-0.5);
       }

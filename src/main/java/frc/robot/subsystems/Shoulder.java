@@ -20,7 +20,7 @@ public class Shoulder extends PIDSubsystem {
   private ArmSensors sensors;
 
   private final double KS = .2;
-  private final double GEAR_RATIO = 420; // 600
+  private final double GEAR_RATIO = 600; // 600
   private final double POSITION_TOLERANCE = 2; // 5
 
   private WPI_TalonSRX shoulder;
@@ -47,29 +47,30 @@ public class Shoulder extends PIDSubsystem {
         currentPosition = getMeasurement();
         super.getController().setTolerance(POSITION_TOLERANCE);
         //enable();
-        //setSetpoint(currentPosition);
+        //setSetpoint(-90);
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    shoulder.set(Math.signum(output) * .5);
-    shoulder2.set(Math.signum(output) * .5);
-    // if(sensors.getSCon() && sensors.getWCon()){
-      //shoulder.setVoltage(output + customFFCalc(setpoint));
-      //shoulder2.setVoltage(output + customFFCalc(setpoint));
-  //}
+    /*if(pdh.getCurrent(1) < 6 && pdh.getCurrent(8) < 6){
+      shoulder.setVoltage(output + customFFCalc(setpoint));
+      shoulder2.setVoltage(output + customFFCalc(setpoint));
+    }
+    else{
+      shoulder.stopMotor();
+      shoulder2.stopMotor();
+    }
+  
 
-    SmartDashboard.putNumber("S_PIDOut", output);
+    SmartDashboard.putNumber("S_FF", customFFCalc(setpoint));*/
   }
 
   public void runShoulder(double speed) {
     if(Math.abs(speed) > 0.1 && pdh.getCurrent(1) < 6 && pdh.getCurrent(8) < 6){
       if(!(sensors.getShoulderAngle() >= 20 && speed > 0)){
-        disable();
         shoulder.set(speed);
         shoulder2.set(speed);
-        currentPosition = getMeasurement();
       }
     }
     else{
@@ -92,8 +93,8 @@ public class Shoulder extends PIDSubsystem {
     double qw = sensors.getWristAngle();
 
     double cs = Math.cos(Math.toRadians(qs));
-     double cse = Math.cos(Math.toRadians(qs + qe));
-     double csew = Math.cos(Math.toRadians(qs + qe + qw));
+    double cse = Math.cos(Math.toRadians(qs + qe));
+    double csew = Math.cos(Math.toRadians(qs + qe + qw));
     // double csew = Math.cos(Math.toRadians(qs + qw));
 
     double gShoulder = cs * (SHO_SEGMENT_MASS * SHO_CG_FROM_JOINT + EL_SEGMENT_MASS * SHO_SEGMENT_LENGTH + W_SEGMENT_MASS * SHO_SEGMENT_LENGTH) + 
@@ -106,12 +107,6 @@ public class Shoulder extends PIDSubsystem {
     return KS * Math.signum(goalPosition - qs) + (12 * gShoulder / (DUAL_MOTOR_STALL_TORQUE * GEAR_RATIO)); //12 change to voltage--/* */
     
 }
-
-  /*public void kindaManual(double move) {
-    if(Math.abs(move) > 0.2) {
-      setSetpoint(0.5 * move + getSetpoint());
-    }
-  }*/
 
   public CommandBase holdPosition(){
     return this.runOnce(() -> runShoulder(0));

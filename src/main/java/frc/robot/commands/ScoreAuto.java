@@ -45,14 +45,14 @@ public class ScoreAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(sensors.getShoulderAngle() < -41){
+    if(sensors.getShoulderAngle() < -41){ // mid -41
       shoulder.runShoulder(0.5);
     }
     else{
       shoulder.runShoulder(0);
       finSho = true;
-      wrist.setSetpoint(-(-41 + 123) + 20);
-      if(sensors.getElbowAngle() > 123){
+      wrist.setSetpoint(-65);
+      if(sensors.getElbowAngle() > 123){ // mid 123
         elbow.runElbow(-0.5);
       }
       else{

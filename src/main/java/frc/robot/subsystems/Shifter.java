@@ -16,7 +16,7 @@ public class Shifter extends SubsystemBase {
   private final double SHIFT_POINT_LOW = 3.0;
   /** Creates a new Shifter. */
   public Shifter(Drivetrain drivetrain) {
-    shifter = new Solenoid(PneumaticsModuleType.REVPH, 13);
+    shifter = new Solenoid(PneumaticsModuleType.CTREPCM, 4); // 13  -->  4
     this.drivetrain = drivetrain;
     shifter.set(false);
   }

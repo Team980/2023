@@ -41,20 +41,20 @@ public class ScoreAutoLow extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    wrist.floorGrab();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(sensors.getShoulderAngle() < 0){
+    if(sensors.getShoulderAngle() < -58){ // -58
       shoulder.runShoulder(0.5);
     }
     else{
       shoulder.runShoulder(0);
       finSho = true;
-      wrist.setSetpoint(20);
-      if(sensors.getElbowAngle() > 20){
+      wrist.setSetpoint(64); // 64
+      if(sensors.getElbowAngle() > 4){ // 4
         elbow.runElbow(-0.5);
       }
       else{

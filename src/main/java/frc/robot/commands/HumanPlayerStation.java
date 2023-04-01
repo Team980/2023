@@ -41,20 +41,19 @@ public class HumanPlayerStation extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    wrist.horizAuto();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if(sensors.getShoulderAngle() < 0){
+  public void execute() { // 3ft 3 in
+    if(sensors.getShoulderAngle() < -31){ // 0
       shoulder.runShoulder(0.5);
     }
     else{
       shoulder.runShoulder(0);
       finSho = true;
-      wrist.setSetpoint(20);
-      if(sensors.getElbowAngle() > 20){
+      wrist.setSetpoint(-75);
+      if(sensors.getElbowAngle() > 123){ // 20
         elbow.runElbow(-0.5);
       }
       else{

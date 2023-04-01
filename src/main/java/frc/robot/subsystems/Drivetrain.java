@@ -98,8 +98,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void driveRobot(double move, double turn) {
-    if(turn > .85){
-      turn = .85;
+    if(turn > .75){
+      turn = .75;
     }
     if(Math.abs(move) < 0.2) { // TODO tune dead zone :)
       move = 0;
@@ -145,6 +145,8 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Amps", pdh.getCurrent(1));
     SmartDashboard.putNumber("Elbow Amps", pdh.getCurrent(9));
     SmartDashboard.putNumber("Shoulder2 Amps", pdh.getCurrent(8));
+
+    SmartDashboard.putNumber("Wrist Amps", pdh.getCurrent(0));
 
     //debugging prints
     /*SmartDashboard.putNumber("leftPIDout", leftDrive.getPIDOutput());

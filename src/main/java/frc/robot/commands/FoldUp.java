@@ -35,7 +35,7 @@ public class FoldUp extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    wrist.runWrist(0);;
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -45,6 +45,7 @@ public class FoldUp extends CommandBase {
       elbow.runElbow(0.5);
     }
     else{
+      wrist.setSetpoint(-63);
       elbow.runElbow(0);
       finEl = true;
       if(sensors.getShoulderAngle() > -80){

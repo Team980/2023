@@ -6,15 +6,18 @@ package frc.robot;
 
 import frc.robot.commands.ArmCommand2;
 import frc.robot.commands.ArmMovementCommand;
+import frc.robot.commands.ArmTest;
 import frc.robot.commands.AutoDriveCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DontMove;
 import frc.robot.commands.DriveOutAuto;
 import frc.robot.commands.FoldUp;
+import frc.robot.commands.HumanPlayerStation;
 import frc.robot.commands.ScoreAuto;
 import frc.robot.commands.ScoreAutoHigh;
 import frc.robot.commands.ScoreAutoLow;
 import frc.robot.commands.ScoreAutoMid;
+import frc.robot.commands.TurnRobot;
 import frc.robot.subsystems.ArmSensors;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elbow;
@@ -101,19 +104,22 @@ public class RobotContainer {
     xbox.rightBumper().onTrue(Commands.runOnce(wrist::openManual, wrist));
     xbox.leftBumper().onTrue(Commands.runOnce(wrist::closeManual, wrist));
 
-    //xbox.x().onTrue(Commands.run(wrist::parkWrist, wrist));
-    //xbox.a().onTrue(Commands.run(wrist::floorGrab, wrist));
+    xbox.x().onTrue(Commands.run(wrist::parkWrist, wrist));
+    xbox.a().onTrue(Commands.run(wrist::floorGrab, wrist));
     xbox.start().onTrue(wrist.horizAuto());
 
-    xbox.y().onTrue(new ScoreAutoHigh(shoulder, elbow, wrist, armSensors));
-    xbox.b().onTrue(new ScoreAutoMid(shoulder, elbow, wrist, armSensors));
-    xbox.a().onTrue(new ScoreAutoLow(shoulder, elbow, wrist, armSensors));
-    xbox.x().onTrue(new FoldUp(shoulder, elbow, wrist, armSensors));
+    //xbox.y().onTrue(new ScoreAutoHigh(shoulder, elbow, wrist, armSensors));
+    //xbox.b().onTrue(new ScoreAutoMid(shoulder, elbow, wrist, armSensors));
+    //xbox.a().onTrue(new ScoreAutoLow(shoulder, elbow, wrist, armSensors));
+    //xbox.x().onTrue(new FoldUp(shoulder, elbow, wrist, armSensors));
+    //xbox.povRight().onTrue(new HumanPlayerStation(shoulder, elbow, wrist, armSensors));
 
     xbox.back().onTrue(Commands.run(
       () -> wrist.runWrist(-xbox.getRightY()),
       wrist
        ));
+
+    //xbox.povLeft().onTrue(new ArmTest(shoulder, -20));
 
     //xbox.a().onTrue(Commands.runOnce(() -> wrist.setSetpoint(-armSensors.getShoulderAngle()), wrist));
     prajBox.button(1).whileTrue(new DontMove(drivetrain, shifter));
@@ -168,7 +174,8 @@ public class RobotContainer {
     //return Autos.exampleAuto(m_exampleSubsystem);
     //return new DriveOutAuto(drivetrain);
     //return new ScoreAuto(shoulder, elbow, wrist, armSensors);
-
-    return new SequentialCommandGroup(new ScoreAuto(shoulder, elbow, wrist, armSensors) , new AutoDriveCommand(drivetrain, -10, -.60));
+    //return new TurnRobot(drivetrain, 20);
+    return new SequentialCommandGroup(new ScoreAuto(shoulder, elbow, wrist, armSensors) , new AutoDriveCommand(drivetrain, -10, -1));
+    //return new AutoDriveCommand(drivetrain, 0, 0);
   }
 }

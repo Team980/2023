@@ -39,9 +39,10 @@ public class Wrist extends PIDSubsystem {
         super.getController().setTolerance(POSITION_TOLERANCE);
         wrist.setNeutralMode(NeutralMode.Brake);
         wrist.setInverted(false);
-        wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.REVPH, 9, 14);
+        wheelyGrab = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 5); // 9, 14  -->  3, 5
         enable();
-        setSetpoint(90);
+        setSetpoint(0);
+        //runWrist(0);
         // setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle())); // 90
   }
 
@@ -79,15 +80,6 @@ public class Wrist extends PIDSubsystem {
     return KS * Math.signum(goalPosition - qw) + (12 * gWrist / (BAG_MOTOR_STALL_TORQUE * GEAR_RATIO));//-12 change to voltage and oppose gravity
   }
 
-  public void kindaManual(double move) {
-    if(Math.abs(move) > 0.2) {
-      setSetpoint(0.5 * move + getSetpoint());
-    }
-  }
-
-  public CommandBase holdPosition(){
-    return this.runOnce(() -> setSetpoint(90));
-  }
 
   /*public CommandBase open(boolean openGrab) {
     if(openGrab) {
@@ -106,12 +98,11 @@ public class Wrist extends PIDSubsystem {
       return this.runOnce(() -> setSetpoint(-180 - (sensors.getShoulderAngle() + sensors.getElbowAngle())));
 
     }*/
-
     return this.run(() -> setSetpoint(-(sensors.getShoulderAngle() + sensors.getElbowAngle()) + 20));
   }
 
   public void parkWrist() {
-    setSetpoint(90);
+    setSetpoint(0);
   }
 
   public void floorGrab() {
